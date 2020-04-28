@@ -8,26 +8,46 @@ const billboardsInfo = [
         x: -10,
         z: 15,
         size: 1,
-        url: 'assets/billboard/firelink.png'
+        url: 'assets/billboard/firelink.png',
+        text: {
+            title: 'FireLink (слоты) 2d',
+            description: 'Написана на Phaser3.'
+        }
     },
     {
         x: -25,
         z: 15,
         size: 1,
-        url: 'assets/billboard/roulette.png'
+        url: 'assets/billboard/firelink2.png',
     },
     {
-        x: -40,
+        x: -50,
         z: 15,
         size: 1,
-        url: 'assets/billboard/race.png'
+        url: 'assets/billboard/roulette.png',
+        text: {
+            title: 'Рулетка 2d',
+            description: 'Написана на Phaser3. Большая сложность разработки\nзаключалась в реализации реалистичного падения шарика\nна колесо. В итоге было сделано 2 отличных друг от друга\nвида падений'
+        }
     },
     {
-        x: -55,
+        x: -65,
         z: 15,
         size: 1,
-        url: 'assets/billboard/lotto.png'
-    }
+        url: 'assets/billboard/roulette2.png',
+    },
+    // {
+    //     x: -40,
+    //     z: 15,
+    //     size: 1,
+    //     url: 'assets/billboard/race.png'
+    // },
+    // {
+    //     x: -55,
+    //     z: 15,
+    //     size: 1,
+    //     url: 'assets/billboard/lotto.png'
+    // }
 ];
 
 
@@ -37,6 +57,7 @@ const createGround = (scene) => {
     materials['grass'].diffuseTexture.vScale = 200.0;
 
     ground.material = materials['grass'];
+    ground.material.specularColor = new BABYLON.Color3(.1, .1, .1);
     ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor, {
         mass: 0,
         friction: 0.7,
@@ -90,7 +111,7 @@ const createPhysicsText = ({text, pos, thickness = 15, scene}) => {
 };
 
 class Billboard {
-    constructor({scene, url, x, z, size}) {
+    constructor({scene, url, x, z, size, text}) {
         this.scene = scene;
         this.timeout = 0;
         this.x = x;
@@ -103,19 +124,8 @@ class Billboard {
         this.currentIndex = 0;
 
         this.billboard = new BABYLON.Mesh("billboard", this.scene);
-
-        const setPivotPointAtBBCenter = (item) => {
-
-            item.computeWorldMatrix();
-
-            const bi = item.getBoundingInfo();
-
-            item.setPivotPoint(bi.boundingSphere.center);
-        };
-
-        setPivotPointAtBBCenter(this.billboard);
-
-        this.billboard.rotate(BABYLON.Axis.Y, -Math.PI / 7, BABYLON.Space.LOCAL);
+        this.billboard.position = new BABYLON.Vector3(this.x, 3.5, this.z);
+        // this.billboard.rotate(BABYLON.Axis.Y, -Math.PI / 10, BABYLON.Space.LOCAL);
 
 
         this.createPicture(false);
@@ -140,7 +150,7 @@ class Billboard {
 
         const box = createBox({
             size: new BABYLON.Vector3(this.size, sizeWidth, sizeHeight),
-            position: new BABYLON.Vector3(pos, posY + sizeHeight / 2, this.z),
+            position: new BABYLON.Vector3(pos, posY + sizeHeight / 2, 0),
             rotation: new BABYLON.Vector3(-Math.PI / 2, Math.PI / 2, 0),
             mass: 0,
             restitution: 0,
@@ -155,8 +165,8 @@ class Billboard {
     }
 
     async createPicture(isRecreate) {
-        let posX = this.x;
-        let posY = 3.5; // на этом уровне находится земля
+        let posX = 0;
+        let posY = 0; // на этом уровне находится земля
 
         for (let y = 0; y < this.heightQuantity; y++) {
             const sizeHeight = y === 0 || y === this.heightQuantity - 1 ? this.size / 4 : this.size;
@@ -182,6 +192,7 @@ class Billboard {
         if (this.billboard.getChildren().length === this.heightQuantity * this.widthQuantity) { // Если создали все кубы, меняем значение
             this.isChangeMass = false;
         }
+
     }
 
     setPositiveMass() {
@@ -197,10 +208,41 @@ class Billboard {
     }
 }
 
+const drawText = ({x, y, z, scene, text}) => {
+    const {textGround, matGround} = materials.createText();
+    const planeSize = 25;
+    const plane = BABYLON.Mesh.CreatePlane("outputplane", planeSize, scene, false);
+    plane.position = new BABYLON.Vector3(x - planeSize / 2, y, z + planeSize / 2);
+    plane.rotation = new BABYLON.Vector3(Math.PI / 2, Math.PI, 0);
+    plane.material = matGround;
+
+    const descriptionLines = text.description.split('\n');
+
+    const titleSize = 32;
+    const descriptionSize = 18;
+
+    textGround.drawText(text.title, 0, titleSize, `bold ${titleSize}px Arial`, 'white', null, true, true);
+
+    descriptionLines.forEach((i, index) => {
+        textGround.drawText(
+            i,
+            0,
+            titleSize * 2.5 + descriptionSize * index,
+            `${descriptionSize}px Arial`,
+            'white',
+            null,
+            true,
+            true
+        );
+    })
+};
+
 const create = (scene) => {
     createGround(scene);
     billboardsArray = billboardsInfo.map(item => {
-        const {x, z, size, url} = item;
+        const {x, z, size, url, text} = item;
+
+        text && drawText({x, z: z + 5, y: 3.6, scene, text});
 
         return new Billboard({
             scene,

@@ -11,6 +11,17 @@ const materials = {
     createTexture(texture, format = 'jpg') {
         this[texture] = new BABYLON.StandardMaterial(`${texture}`, this.scene);
         this[texture].diffuseTexture = new BABYLON.Texture(`assets/${texture}.${format}`, this.scene);
+    },
+
+    createText() {
+        const textureResolution = 512;
+        const textGround = new BABYLON.DynamicTexture("textSurface", textureResolution, this.scene);
+        textGround.hasAlpha = true;
+
+        const matGround = new BABYLON.StandardMaterial("Mat", this.scene);
+        matGround.diffuseTexture = textGround;
+
+        return {textGround, matGround};
     }
 };
 

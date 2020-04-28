@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="494f19c3-024e-4c79-9be4-54ffcb83f6a5" name="Default Changelist" comment="" />
+    <list default="true" id="494f19c3-024e-4c79-9be4-54ffcb83f6a5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/human.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/pasha.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/zombie.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/materials.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/materials.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/playground.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/playground.js" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,8 +24,13 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1alHpqlAQUPygkJ08j1l5s9Zc9n" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2.4\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
@@ -55,11 +69,25 @@
       <workItem from="1587303469329" duration="18668000" />
       <workItem from="1587398096404" duration="20409000" />
       <workItem from="1587500602812" duration="1668000" />
-      <workItem from="1587913945990" duration="13265000" />
+      <workItem from="1587913945990" duration="16189000" />
+      <workItem from="1588004036340" duration="12887000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

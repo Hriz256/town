@@ -13,11 +13,29 @@ const createDefaultEngine = () => new BABYLON.Engine(canvas, true, {preserveDraw
 const createScene = function () {
     const scene = new BABYLON.Scene(engine);
 
-    const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
-    light.intensity = 0.7;
+    // const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+    // light.intensity = 0.7;
 
     const camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 1.4, Math.PI / 2.8, 30, new BABYLON.Vector3(0, 0, 0), scene);
     camera.attachControl(canvas, true);
+
+    BABYLON.SceneLoader.ImportMesh("", "assets/lamp/", "Evrosvet_GL 1014F_black_gold.obj", scene, function (newMeshes, particleSystems, skeletons) {
+        var sun = BABYLON.Mesh.CreateSphere('sun', 16, 2, scene);
+        sun.position = new BABYLON.Vector3(-23, 3.5, 15);
+
+        // var materialSphere = new BABYLON.StandardMaterial("sphere1", scene);
+        // materialSphere.emissiveColor = new BABYLON.Color3(1.0, 1.0, 0.7);
+        // sun.material = materialSphere;
+
+        newMeshes.forEach(i => i.parent = sun);
+
+        sun.scaling = new BABYLON.Vector3(0.005, 0.005, 0.005)
+
+        var light = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 0, 0), scene);
+        light.range = 300;
+        light.parent = sun;
+
+    })
 
     scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.AmmoJSPlugin());
 
