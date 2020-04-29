@@ -19,22 +19,35 @@ const createScene = function () {
     const camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 1.4, Math.PI / 2.8, 30, new BABYLON.Vector3(0, 0, 0), scene);
     camera.attachControl(canvas, true);
 
-    BABYLON.SceneLoader.ImportMesh("", "assets/lamp/", "Evrosvet_GL 1014F_black_gold.obj", scene, function (newMeshes, particleSystems, skeletons) {
-        var sun = BABYLON.Mesh.CreateSphere('sun', 16, 2, scene);
-        sun.position = new BABYLON.Vector3(-23, 3.5, 15);
+    BABYLON.SceneLoader.ImportMesh("", "assets/lamp/", "StreetLamp.obj", scene, function (newMeshes, particleSystems, skeletons) {
+        const lamp = new BABYLON.Mesh("lamp", scene);
 
-        // var materialSphere = new BABYLON.StandardMaterial("sphere1", scene);
-        // materialSphere.emissiveColor = new BABYLON.Color3(1.0, 1.0, 0.7);
-        // sun.material = materialSphere;
+        scene.getMeshByName('Plane_Plane.001').dispose();
 
-        newMeshes.forEach(i => i.parent = sun);
+        newMeshes.forEach(i => i.parent = lamp);
+        lamp.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
+        lamp.position = new BABYLON.Vector3(-22, 3.5, 15);
+        lamp.rotation.y -= Math.PI / 2;
 
-        sun.scaling = new BABYLON.Vector3(0.005, 0.005, 0.005)
+        const light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 0, 0), scene);
+        light1.range = 200;
+        light1.parent =  newMeshes[0];
 
-        var light = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 0, 0), scene);
-        light.range = 300;
-        light.parent = sun;
+        const light2 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 0, 0), scene);
+        light2.range = 200;
+        light2.parent =  newMeshes[1];
 
+        const light3 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 0, 0), scene);
+        light3.range = 200;
+        light3.parent =  newMeshes[2];
+
+        const light4 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 0, 0), scene);
+        light4.range = 200;
+        light4.parent =  newMeshes[3];
+
+        const light5 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 0, 0), scene);
+        light5.range = 200;
+        light5.parent =  newMeshes[4];
     })
 
     scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.AmmoJSPlugin());
