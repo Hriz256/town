@@ -1,5 +1,5 @@
 import {createFrame} from "./frameIntersect";
-import {materials, mesh} from "./materials";
+import {drawText, materials, mesh} from "./materials";
 
 const icons = {
     'telegram': {
@@ -8,7 +8,8 @@ const icons = {
             y: 5,
             z: 5
         },
-        link: 'https://t.me/vladuxxxa'
+        link: 'https://t.me/vladuxxxa',
+        description: 'Telegram'
     },
     'github': {
         position: {
@@ -16,7 +17,8 @@ const icons = {
             y: 5,
             z: 5
         },
-        link: 'https://github.com/Hriz256'
+        link: 'https://github.com/Hriz256',
+        description: 'Github'
     },
     'gmail': {
         position: {
@@ -24,7 +26,8 @@ const icons = {
             y: 5,
             z: 5
         },
-        link: 'https://mail.google.com/mail/u/0/#inbox?compose=GTvVlcSBmWzBSMPKZTStRvDBvFqkLWXDRZWmMbcWjRdjBZzzrJDDPwwvfVKSVBSbcGFtDskbzqcxC'
+        link: 'https://mail.google.com/mail/u/0/#inbox?compose=GTvVlcSBmWzBSMPKZTStRvDBvFqkLWXDRZWmMbcWjRdjBZzzrJDDPwwvfVKSVBSbcGFtDskbzqcxC',
+        description: 'Gmail: vladik25666@gmail.com'
     },
     'site': {
         position: {
@@ -32,12 +35,13 @@ const icons = {
             y: 5,
             z: 5
         },
-        link: 'https://hriz256.github.io/'
+        link: 'https://hriz256.github.io/',
+        description: 'Портфолио'
     }
 };
 
 class Icon {
-    constructor({x, y, z, material, scene, link}) {
+    constructor({x, y, z, material, scene, link, description}) {
         this.scene = scene;
         this.link = link;
         this.width = 7;
@@ -49,10 +53,13 @@ class Icon {
         this.diameter = 4;
         this.frameText = 'открыть';
         this.isPictureChange = false;
+        this.description = description;
+        this.frameY = 0.05;
 
         this.createIcon();
         this.createFrame();
         this.createEnter();
+        this.createTextAroundFrame();
     }
 
     createIcon() {
@@ -73,16 +80,32 @@ class Icon {
     createFrame() {
         const {frame, text} = createFrame({
             x: this.x,
-            y: 0.05,
+            y: this.frameY,
             z: this.z + 5,
             width: this.width,
             height: this.height,
+
             text: this.frameText,
             scene: this.scene
         });
 
         this.frame = frame;
         this.text = text;
+    }
+
+    createTextAroundFrame() {
+        Array.from(this.description.split(' '), (text, index) => {
+            drawText({
+                x: this.x + this.width / 2,
+                y: this.frameY,
+                z: this.z + this.height + (index + 1),
+                text,
+                multiplier: index === 0 ? 4 : 5,
+                size: 60,
+                height: 3,
+                style: 'bold'
+            });
+        });
     }
 
     createEnter() {
@@ -154,7 +177,7 @@ const createIcons = (scene) => {
     return Array.from(Object.entries(icons), icon => {
         const {x, y, z} = icon[1].position;
 
-        return new Icon({x, y, z, material: icon[0], link: icon[1].link, scene});
+        return new Icon({x, y, z, material: icon[0], link: icon[1].link, scene, description: icon[1].description});
     });
 };
 

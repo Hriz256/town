@@ -1,5 +1,4 @@
 import * as BABYLON from 'babylonjs';
-// import './ammo.js';
 import 'babylonjs-loaders'
 import createCar from "./car";
 import {materials, mesh} from "./playground/materials";
@@ -13,11 +12,11 @@ const createDefaultEngine = () => new BABYLON.Engine(canvas, true, {preserveDraw
 const createScene = function () {
     const scene = new BABYLON.Scene(engine);
 
-    // const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
-    // light.intensity = 0.7;
+    const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+    light.intensity = 0.7;
 
     const camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2.8, 30, new BABYLON.Vector3(0, 0, 0), scene);
-    // camera.attachControl(canvas, true);
+    camera.attachControl(canvas, true);
 
     scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.AmmoJSPlugin());
 
@@ -36,16 +35,6 @@ const createScene = function () {
     create(scene);
     const car = createCar({scene, engine, camera});
     camera.lockedTarget = car;
-
-
-    // const camera = new BABYLON.FollowCamera("FollowCam", new BABYLON.Vector3(0, 10, -10), scene);
-    // camera.radius = 10;
-    // camera.heightOffset = 4;
-    // camera.rotationOffset = 0;
-    // camera.cameraAcceleration = 0.05;
-    // camera.maxCameraSpeed = 400;
-    // camera.lockedTarget = car;
-    // scene.activeCamera = camera;
 
     return scene;
 };

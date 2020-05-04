@@ -83,7 +83,7 @@ const mesh = {
     },
 };
 
-const drawText = ({x, y, z, text, size, multiplier = 3, height, inCenter = false, style = 'normal'}) => {
+const drawText = ({x, y, z, text, size, multiplier = 3, height, inCenterX = false, inCenterZ = false, style = 'normal'}) => {
     const DTHeight = multiplier * size;
     const ratio = height / DTHeight;
     const initText = materials.createText({width: 64, height: 64});
@@ -99,9 +99,9 @@ const drawText = ({x, y, z, text, size, multiplier = 3, height, inCenter = false
         width: planeWidth,
         height,
         position: {
-            x: inCenter ? x : x - planeWidth / 2,
+            x: inCenterX ? x : x - planeWidth / 2,
             y,
-            z: inCenter ? z : z + height / 2
+            z: inCenterZ ? z : z + height / 2
         },
         rotation: {
             x: Math.PI / 2,

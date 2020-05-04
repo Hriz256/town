@@ -26,7 +26,7 @@ const createMeshByIntersect = ({x, y, z, scene, width, height}) => {
 const createFrame = ({x, y, z, scene, width, height, text}) => {
     return {
         frame: createMeshByIntersect({x, y, z, scene, width, height}),
-        text: drawText({x, y, z: z, text, size: 48, height: 3, multiplier: 3, inCenter: true})
+        text: drawText({x, y, z: z, text, size: 48, height: 3, multiplier: 3, inCenterX: true, inCenterZ: true})
     };
 };
 
