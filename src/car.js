@@ -1,18 +1,6 @@
 import * as BABYLON from 'babylonjs';
-import {materials} from "./materials";
-import {billboardsArray} from './playground';
-
-function setVisibility(mesh, value) {
-    mesh.isVisible = value;
-
-    const children = mesh.getChildren();
-
-    for (let i = 0; i < children.length; i++) {
-        const child = children[i];
-
-        setVisibility(child, value);
-    }
-}
+import {materials} from "./playground/materials";
+import {billboardsArray, iconsFrame} from './playground/playground';
 
 var vehicle;
 var wheelMeshes = [];
@@ -32,7 +20,7 @@ var ZERO_QUATERNION = new BABYLON.Quaternion();
 var chassisWidth = 1.8;
 var chassisHeight = .8;
 var chassisLength = 4.6;
-var massVehicle = 200;
+var massVehicle = 400;
 
 var wheelAxisPositionBack = -1.77;
 var wheelRadiusBack = .4;
@@ -46,18 +34,16 @@ var wheelAxisHeightFront = 0.38;
 var wheelRadiusFront = .4;
 var wheelWidthFront = .3;
 
-var friction = 5;
 var suspensionStiffness = 10;
 var suspensionDamping = 0.3;
 var suspensionCompression = 4.4;
 var suspensionRestLength = 0.6;
 var rollInfluence = 0.0;
 
-var steeringIncrement = .01;
-var steeringClamp = 0.3;
-var maxEngineForce = 500;
-var maxBreakingForce = 10;
-var incEngine = 10.0;
+var steeringIncrement = .02;
+var steeringClamp = 0.4;
+var maxEngineForce = 2000;
+var maxBreakingForce = 20;
 
 var FRONT_LEFT = 0;
 var FRONT_RIGHT = 1;
@@ -68,42 +54,123 @@ var engineForce = 0;
 var vehicleSteering = 0;
 var breakingForce = 0;
 
-const createCar = (scene) => {
+const headlights = {
+    spot: {
+        left: null,
+        right: null
+    },
+    point: {
+        left: null,
+        right: null
+    },
+    enable: true
+};
+
+const createHeadlights = (car, scene) => {
+    headlights.spot.left = new BABYLON.SpotLight("spotLight", new BABYLON.Vector3(-7, 1, -25), new BABYLON.Vector3(0, 10, -11), Math.PI / 2, 3, scene);
+    headlights.spot.left.parent = car;
+    headlights.spot.left.intensity = 10;
+    // light.diffuse = new BABYLON.Color3(1, 0, 0);
+
+    // mesh_mm10 - задняя фара
+    // mesh_mm8 - задняя лампа
+
+    headlights.spot.right = new BABYLON.SpotLight("spotLight", new BABYLON.Vector3(6.8, 1, -25), new BABYLON.Vector3(0, 10, -11), Math.PI / 2, 3, scene);
+    headlights.spot.right.parent = car;
+    headlights.spot.right.intensity = 10;
+    // light2.diffuse = new BABYLON.Color3(1, 0, 0);
+
+    headlights.point.left = BABYLON.Mesh.CreateSphere("sun", 32, 1.5, scene);
+    headlights.point.left.position = new BABYLON.Vector3(-7, -5, -19.5);
+    headlights.point.left.parent = car;
+    headlights.point.left.material = materials['white'];
+
+    headlights.point.right = headlights.point.left.clone('rightPointlight');
+    headlights.point.right.position = new BABYLON.Vector3(7, -5, -19.5);
+};
+
+const enableHeadlights = () => {
+    headlights.enable = !headlights.enable;
+
+    Object.values(headlights.spot).forEach(i => i.setEnabled(headlights.enable));
+    Object.values(headlights.point).forEach(i => i.isVisible = headlights.enable);
+};
+
+const createCar = ({scene}) => {
     const chassisMesh = createVehicle(new BABYLON.Vector3(0, 4, -20), ZERO_QUATERNION, scene);
 
+    scene.onPointerDown = (evt, pickResult) => {
+        const icon = iconsFrame.find(icon => icon.isPictureChange);
 
-    window.addEventListener('keydown', (e) => {
-        if (keysActions[e.code]) {
-            actions[keysActions[e.code]] = true;
+        if (icon && icon.frame.intersectsPoint(new BABYLON.Vector3(pickResult.pickedPoint.x, icon.frame.position.y, pickResult.pickedPoint.z))) {
+            icon.openSite();
         }
-    });
-
-    window.addEventListener('keyup', (e) => {
-        if (keysActions[e.code]) {
-            actions[keysActions[e.code]] = false;
-        }
-    });
+    };
 
     scene.registerBeforeRender(function () {
+        billboardsArray.filter(i => i.frame).forEach(item => {
+            if (chassisMesh.intersectsMesh(item.frame, false) && !item.isVideoShow &&
+                (chassisMesh.position.x !== 0 && chassisMesh.position.z !== 0)) {
+                item.showVideo();
+            }
+
+            if (!chassisMesh.intersectsMesh(item.frame, false) && item.isVideoShow) {
+                item.hideVideo();
+            }
+        });
+
+        Array.from(iconsFrame, icon => {
+            if (chassisMesh.intersectsMesh(icon.frame, false) && !icon.isPictureChange &&
+                (chassisMesh.position.x !== 0 && chassisMesh.position.z !== 0)) {
+                icon.showEnter();
+                // icon.openSite();
+            }
+
+            if (!chassisMesh.intersectsMesh(icon.frame, false) && icon.isPictureChange &&
+                (chassisMesh.position.x !== 0 && chassisMesh.position.z !== 0)) {
+                icon.showEnter();
+            }
+        });
+
+
         if (vehicleReady) {
             let speed = vehicle.getCurrentSpeedKmHour();
             breakingForce = 0;
             engineForce = 0;
 
-            if (actions.acceleration) {
-                speed < -1 ? breakingForce = maxBreakingForce : engineForce = maxEngineForce;
-            } else if (actions.braking) {
-                speed > 1 ? breakingForce = maxBreakingForce : engineForce = -maxEngineForce;
+            if(actions.acceleration){
+                if (speed < -1){
+                    breakingForce = maxBreakingForce;
+                } else if (speed >= -1 && speed < 110){
+                    engineForce = maxEngineForce;
+                }
+
+            } else if(actions.braking){
+                if (speed > 1){
+                    breakingForce = maxBreakingForce;
+                }else if (speed <= 1 && speed > -60) {
+                    engineForce = -maxEngineForce ;
+                }
             }
 
-            if (actions.right) {
-                if (vehicleSteering < steeringClamp) {
+            if (!actions.acceleration && !actions.braking) {
+                speed > 0 ? breakingForce = maxBreakingForce : engineForce = maxEngineForce;
+
+                if (speed < 1 && speed > -1) {
+                    engineForce = 0;
+                }
+            }
+
+            if(actions.right){
+                if (vehicleSteering < steeringClamp){
                     vehicleSteering += steeringIncrement;
                 }
-            } else if (actions.left) {
-                if (vehicleSteering > -steeringClamp) {
+
+            } else if(actions.left){
+                if (vehicleSteering > -steeringClamp){
                     vehicleSteering -= steeringIncrement;
                 }
+
             } else {
                 vehicleSteering = 0;
             }
@@ -218,7 +285,7 @@ function createVehicle(pos, quat, scene) {
     meshTask.onSuccess = function ({loadedMeshes}) {
         const carBody = new BABYLON.Mesh("main", scene);
 
-        loadedMeshes.forEach((i, index) => {
+        loadedMeshes.forEach(i => {
             i.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
             i.rotation.x = Math.PI / 2;
             i.position.y = 3;
@@ -241,8 +308,10 @@ function createVehicle(pos, quat, scene) {
 
         carBody.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
         carBody.parent = chassisMesh;
-        setVisibility(chassisMesh, false);
-        setVisibility(carBody, true);
+
+        createHeadlights(carBody, scene);
+
+        chassisMesh.isVisible = false;
 
         addWheel(true, new Ammo.btVector3(wheelHalfTrackFront, wheelAxisHeightFront, wheelAxisFrontPosition), wheelRadiusFront, wheelWidthFront, FRONT_LEFT);
         addWheel(true, new Ammo.btVector3(-wheelHalfTrackFront, wheelAxisHeightFront, wheelAxisFrontPosition), wheelRadiusFront, wheelWidthFront, FRONT_RIGHT);
@@ -288,6 +357,28 @@ function createWheelMesh(radius, width, scene) {
 
     return mesh;
 }
+
+window.addEventListener('keydown', (e) => {
+    if (keysActions[e.code]) {
+        actions[keysActions[e.code]] = true;
+    }
+});
+
+window.addEventListener('keyup', (e) => {
+    if (keysActions[e.code]) {
+        actions[keysActions[e.code]] = false;
+    }
+
+    e.code === 'KeyL' && enableHeadlights();
+});
+
+window.addEventListener('keyup', (e) => {
+    if (e.code === 'Enter') {
+        const icon = iconsFrame.find(icon => icon.isPictureChange);
+
+        icon && icon.openSite();
+    }
+});
 
 
 export default createCar;

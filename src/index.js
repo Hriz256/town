@@ -2,8 +2,8 @@ import * as BABYLON from 'babylonjs';
 // import './ammo.js';
 import 'babylonjs-loaders'
 import createCar from "./car";
-import {materials} from "./materials";
-import create from "./playground";
+import {materials, mesh} from "./playground/materials";
+import create from "./playground/playground";
 
 const canvas = document.getElementById("renderCanvas");
 let scene = null;
@@ -16,50 +16,27 @@ const createScene = function () {
     // const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
     // light.intensity = 0.7;
 
-    const camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 1.4, Math.PI / 2.8, 30, new BABYLON.Vector3(0, 0, 0), scene);
-    camera.attachControl(canvas, true);
-
-    BABYLON.SceneLoader.ImportMesh("", "assets/lamp/", "StreetLamp.obj", scene, function (newMeshes, particleSystems, skeletons) {
-        const lamp = new BABYLON.Mesh("lamp", scene);
-
-        scene.getMeshByName('Plane_Plane.001').dispose();
-
-        newMeshes.forEach(i => i.parent = lamp);
-        lamp.scaling = new BABYLON.Vector3(0.5, 0.5, 0.5);
-        lamp.position = new BABYLON.Vector3(-22, 3.5, 15);
-        lamp.rotation.y -= Math.PI / 2;
-
-        const light1 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 0, 0), scene);
-        light1.range = 200;
-        light1.parent =  newMeshes[0];
-
-        const light2 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 0, 0), scene);
-        light2.range = 200;
-        light2.parent =  newMeshes[1];
-
-        const light3 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 0, 0), scene);
-        light3.range = 200;
-        light3.parent =  newMeshes[2];
-
-        const light4 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 0, 0), scene);
-        light4.range = 200;
-        light4.parent =  newMeshes[3];
-
-        const light5 = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 0, 0), scene);
-        light5.range = 200;
-        light5.parent =  newMeshes[4];
-    })
+    const camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2.8, 30, new BABYLON.Vector3(0, 0, 0), scene);
+    // camera.attachControl(canvas, true);
 
     scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.AmmoJSPlugin());
 
+    mesh.scene = scene;
     materials.scene = scene;
     materials.createColor('green', '#1C5030');
+    materials.createColor('lightColor', '#feff7f');
+    materials.createColor('white', '#ffffff');
     materials.createTexture('grass');
+
+    materials.createTexture('icons/enter', 'png');
+    materials['icons/enter'].diffuseTexture.hasAlpha = true;
+
     materials.createTexture('tyre2', 'png');
 
     create(scene);
-    const car = createCar(scene);
+    const car = createCar({scene, engine, camera});
     camera.lockedTarget = car;
+
 
     // const camera = new BABYLON.FollowCamera("FollowCam", new BABYLON.Vector3(0, 10, -10), scene);
     // camera.radius = 10;
