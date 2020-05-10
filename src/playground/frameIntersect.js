@@ -17,7 +17,7 @@ const createMeshByIntersect = ({x, y, z, scene, width, height}) => {
 
     const subCSG = aCSG.subtract(cCSG);
     const newMesh = subCSG.toMesh("csg", materials['white'], scene);
-    newMesh.position = new BABYLON.Vector3(x, y, z);
+    newMesh.position.set(x, y, z);
     newMesh.rotation.x = Math.PI / 2;
 
     return newMesh;

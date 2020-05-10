@@ -123,7 +123,6 @@ const createCar = ({scene}) => {
             if (chassisMesh.intersectsMesh(icon.frame, false) && !icon.isPictureChange &&
                 (chassisMesh.position.x !== 0 && chassisMesh.position.z !== 0)) {
                 icon.showEnter();
-                // icon.openSite();
             }
 
             if (!chassisMesh.intersectsMesh(icon.frame, false) && icon.isPictureChange &&

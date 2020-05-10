@@ -75,7 +75,7 @@ const mesh = {
         }, this.scene);
     },
 
-    _generalParams(mesh, {position, rotation, material}) {
+    _generalParams(mesh, {position, rotation = new BABYLON.Vector3(0, 0, 0), material}) {
         mesh.position.set(position.x, position.y, position.z);
         mesh.rotation.set(rotation.x, rotation.y, rotation.z);
         mesh.material = material;

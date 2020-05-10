@@ -30,7 +30,7 @@ const createStreetLamp = ({x, z, scene}) => {
 
 
         newMeshes.forEach(i => {
-            i.scaling = new BABYLON.Vector3(0.6, 0.6, 0.6);
+            i.scaling.set(0.6, 0.6, 0.6);
             i.position.y -= 4.5;
             i.parent = columnPart1
         });
@@ -63,7 +63,7 @@ const createBench = (scene) => {
         const box = new BABYLON.Mesh('', scene);
 
         newMeshes.forEach(i => {
-            i.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
+            i.scaling.set(0.1, 0.1, 0.1);
             i.parent = box;
         });
     });

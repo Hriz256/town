@@ -51,7 +51,7 @@ class Icon {
         this.z = z;
         this.material = material;
         this.diameter = 4;
-        this.frameText = 'открыть';
+        this.text = 'открыть';
         this.isPictureChange = false;
         this.description = description;
         this.frameY = 0.05;
@@ -77,6 +77,13 @@ class Icon {
         this.icon.setPhysics({mass: 10});
     }
 
+    updateText(isVisible) {
+        const font = this.textPlane.getContext().font;
+
+        this.textPlane.getContext().clearRect(0, 0, this.textPlane._cachedSize.width, this.textPlane._cachedSize.height);
+        this.textPlane.drawText(isVisible ? this.text : '', 0, null, font, '#fff');
+    }
+
     createFrame() {
         const {frame, text} = createFrame({
             x: this.x,
@@ -84,13 +91,22 @@ class Icon {
             z: this.z + 5,
             width: this.width,
             height: this.height,
-
-            text: this.frameText,
+            text: this.text,
             scene: this.scene
         });
 
         this.frame = frame;
-        this.text = text;
+        this.textPlane = text;
+
+        this.imgFrame = mesh.createPlane({
+            width: this.width,
+            height: this.height,
+            position: {x: this.x, y: this.frameY, z: this.z + 5},
+            rotation: {x: Math.PI / 2, y: Math.PI, z: 0},
+            material: materials.createTexture(`icons/${this.material}Floor`, 'png')
+        });
+
+        this.imgFrame.scaling.set(0, 0, 1);
     }
 
     createTextAroundFrame() {
@@ -130,42 +146,69 @@ class Icon {
     }
 
     runEnterAnim() {
-        const animationBox = new BABYLON.Animation("tutoAnimation", "position.y", 120, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+        const enterAnim = new BABYLON.Animation("enterAnim", "position.y", 120, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
             BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 
-        //Here we have chosen a loop mode, but you can change to :
+        const scalingX = new BABYLON.Animation("scalingX", "scaling.x", 120, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+            BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+
+        const scalingY = new BABYLON.Animation("scalingZ", "scaling.y", 120, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+            BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+
+        // Here we have chosen a loop mode, but you can change to :
         //  Use previous values and increment it (BABYLON.Animation.ANIMATIONLOOPMODE_RELATIVE)
         //  Restart from initial value (BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE)
         //  Keep the final value (BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT)
 
-        // Animation keys
-        const keys = [];
+        const enterKeys = [
+            {
+                frame: 0,
+                value: 0
+            },
+            {
+                frame: 80,
+                value: this.y + 1
+            },
+            {
+                frame: 100,
+                value: this.y
+            }
+        ];
 
-        keys.push({
-            frame: 0,
-            value: 0
-        });
+        const frameKeys = [
+            {
+                frame: 0,
+                value: 0
+            },
+            {
+                frame: 60,
+                value: 1
+            }
+        ];
 
-        keys.push({
-            frame: 80,
-            value: this.y + 1
-        });
-
-        keys.push({
-            frame: 100,
-            value: this.y
-        });
-
-        animationBox.setKeys(keys);
-        this.enter.animations.push(animationBox);
+        enterAnim.setKeys(enterKeys);
+        this.enter.animations.push(enterAnim);
         this.scene.beginAnimation(this.enter, 0, 100, false);
+
+        scalingX.setKeys(frameKeys);
+        scalingY.setKeys(frameKeys);
+        this.imgFrame.animations.push(scalingX, scalingY);
+        this.scene.beginAnimation(this.imgFrame, 0, 100, false);
     }
 
     showEnter() {
         this.isPictureChange = !this.isPictureChange;
         this.enter.isVisible = this.isPictureChange;
 
-        this.enter.isVisible ? this.runEnterAnim() : this.enter.position.y = 0;
+        !this.isPictureChange && this.scene.stopAnimation(this.imgFrame);
+        this.updateText(!this.isPictureChange);
+
+        if (this.isPictureChange) {
+            this.runEnterAnim();
+        } else {
+            this.enter.position.y = 0;
+            this.imgFrame.scaling.set(0, 0, 1);
+        }
     }
 
     openSite() {
