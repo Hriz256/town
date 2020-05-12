@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="494f19c3-024e-4c79-9be4-54ffcb83f6a5" name="Default Changelist" comment="" />
+    <list default="true" id="494f19c3-024e-4c79-9be4-54ffcb83f6a5" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/billboard/lotto.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/billboard/lotto.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/playground/billboardsEnvironment/billboardsData.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/playground/billboardsEnvironment/billboardsData.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/playground/icons.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/playground/icons.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/playground/playground.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/playground/playground.js" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,7 +86,10 @@
       <workItem from="1588676196986" duration="2519000" />
       <workItem from="1588764710300" duration="27000" />
       <workItem from="1589126793848" duration="8100000" />
-      <workItem from="1589216496298" duration="240000" />
+      <workItem from="1589216496298" duration="552000" />
+      <workItem from="1589262792705" duration="11000" />
+      <workItem from="1589270472663" duration="2130000" />
+      <workItem from="1589273025409" duration="208000" />
     </task>
     <servers />
   </component>

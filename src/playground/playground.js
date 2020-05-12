@@ -77,7 +77,7 @@ const createPhysicsText = ({text, pos, thickness = 15, scene}) => {
         `${text}`,
         {
             "anchor": "center",
-            "letter-height": 50,
+            "letter-height": 40,
             "letter-thickness": thickness,
             "color": "#1C5030",
             "position": {
@@ -88,9 +88,9 @@ const createPhysicsText = ({text, pos, thickness = 15, scene}) => {
         }
     );
 
-    const mesh = physicsText.getMesh();
+    const physicsMesh = physicsText.getMesh();
 
-    const vectorsWorld = mesh.getBoundingInfo().boundingBox.vectorsWorld;
+    const vectorsWorld = physicsMesh.getBoundingInfo().boundingBox.vectorsWorld;
     const x = +(vectorsWorld[1].x - vectorsWorld[0].x);
     const y = +(vectorsWorld[1].y - vectorsWorld[0].y);
     const z = +(vectorsWorld[1].z - vectorsWorld[0].z);
@@ -103,10 +103,12 @@ const createPhysicsText = ({text, pos, thickness = 15, scene}) => {
         restitution: 0
     });
 
+    container.setPhysics({mass: 10});
+
     container.isVisible = false;
-    mesh.parent = container;
-    mesh.position.y += y / 2;
-    mesh.position.z -= z / 2;
+    physicsMesh.parent = container;
+    physicsMesh.position.y += y / 2;
+    physicsMesh.position.z -= z / 2;
 
     return x;
 };
@@ -138,18 +140,18 @@ const create = (scene) => {
         });
     });
 
-    // const letters = 'vladislav zhidko'.split('').filter(i => i !== ' ');
-    //     // let x = 0;
-    //     //
-    //     // letters.forEach(i => {
-    //     //     const letterWidth = createPhysicsText({
-    //     //         text: i,
-    //     //         pos: new BABYLON.Vector3(21 + x, 5.5, -10),
-    //     //         scene
-    //     //     });
-    //     //
-    //     //     x -= letterWidth + 1;
-    //     // });
+    const letters = 'vladislav zhidko'.split('').filter(i => i !== ' ');
+    let x = 0;
+
+    letters.forEach(i => {
+        const letterWidth = createPhysicsText({
+            text: i,
+            pos: new BABYLON.Vector3(21 + x, 5.5, 15),
+            scene
+        });
+
+        x -= letterWidth + 1;
+    });
 
     // createBench()
 };

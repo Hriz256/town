@@ -4,36 +4,36 @@ import {drawText, materials, mesh} from "./materials";
 const icons = {
     'telegram': {
         position: {
-            x: 20,
+            x: 15,
             y: 5,
-            z: 5
+            z: -15
         },
         link: 'https://t.me/vladuxxxa',
         description: 'Telegram'
     },
     'github': {
         position: {
-            x: 10,
+            x: 5,
             y: 5,
-            z: 5
+            z: -15
         },
         link: 'https://github.com/Hriz256',
         description: 'Github'
     },
     'gmail': {
         position: {
-            x: 0,
+            x: -5,
             y: 5,
-            z: 5
+            z: -15
         },
         link: 'https://mail.google.com/mail/u/0/#inbox?compose=GTvVlcSBmWzBSMPKZTStRvDBvFqkLWXDRZWmMbcWjRdjBZzzrJDDPwwvfVKSVBSbcGFtDskbzqcxC',
         description: 'Gmail: vladik25666@gmail.com'
     },
     'site': {
         position: {
-            x: -10,
+            x: -15,
             y: 5,
-            z: 5
+            z: -15
         },
         link: 'https://hriz256.github.io/',
         description: 'Портфолио'

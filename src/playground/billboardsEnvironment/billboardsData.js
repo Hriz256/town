@@ -1,7 +1,7 @@
 const billboardsInfo = [
     {
-        x: -10,
-        z: 15,
+        x: -40,
+        z: 0,
         size: 1,
         width: 14,
         height: 8,
@@ -13,17 +13,17 @@ const billboardsInfo = [
         }
     },
     {
-        x: -27,
-        z: 15,
+        x: -57,
+        z: 0,
         size: 1,
         width: 14,
         height: 8,
-        url: 'assets/billboard/firelink2.png',
+        url: 'assets/billboard/firelink3.png',
         videoURL: 'assets/lamp/video.mp4'
     },
     {
-        x: -50,
-        z: 15,
+        x: 67,
+        z: 0,
         size: 1,
         width: 14,
         height: 8,
@@ -35,8 +35,8 @@ const billboardsInfo = [
         }
     },
     {
-        x: -67,
-        z: 15,
+        x: 50,
+        z: 0,
         size: 1,
         width: 14,
         height: 8,
@@ -44,17 +44,46 @@ const billboardsInfo = [
         videoURL: 'assets/lamp/video.mp4'
     },
     // {
-    //     x: -90,
-    //     z: 15,
+    //     x: 16,
+    //     z: -50,
     //     size: 1,
-
-    //     url: 'assets/billboard/race.png'
+    //     width: 14,
+    //     height: 8,
+    //     url: 'assets/billboard/race.png',
+    //     text: {
+    //         title: 'Гонки 2d',
+    //         description: ''
+    //     }
     // },
     // {
-    //     x: -105,
-    //     z: 15,
+    //     x: -1,
+    //     z: -50,
     //     size: 1,
-    //     url: 'assets/billboard/lotto.png'
+    //     width: 14,
+    //     height: 8,
+    //     url: 'assets/billboard/race.png',
+    //     videoURL: 'assets/lamp/video.mp4'
+    // },
+    // {
+    //     x: 16,
+    //     z: 50,
+    //     size: 1,
+    //     width: 14,
+    //     height: 8,
+    //     url: 'assets/billboard/lotto.png',
+    //     text: {
+    //         title: 'Лотто 3d',
+    //         description: ''
+    //     }
+    // },
+    // {
+    //     x: -1,
+    //     z: 50,
+    //     size: 1,
+    //     width: 14,
+    //     height: 8,
+    //     url: 'assets/billboard/lotto2.png',
+    //     videoURL: 'assets/lamp/video.mp4'
     // }
 ];
 
