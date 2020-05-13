@@ -1,5 +1,3 @@
-import * as BABYLON from 'babylonjs';
-import 'babylonjs-loaders'
 import createCar from "./car";
 import {materials, mesh} from "./playground/materials";
 import create from "./playground/playground";
@@ -33,8 +31,7 @@ const createScene = function () {
     materials.createTexture('tyre2', 'png');
 
     create(scene);
-    const car = createCar({scene, engine, camera});
-    camera.lockedTarget = car;
+    camera.lockedTarget = createCar({scene, engine, camera});
 
     return scene;
 };
@@ -44,6 +41,9 @@ scene = createScene();
 
 if (!engine) throw 'engine should not be null.';
 
-engine.runRenderLoop(() => scene && scene.render());
+engine.runRenderLoop(() => {
+    scene && scene.render();
+    document.getElementById('fps').innerHTML = `${engine.getFps().toFixed()} fps`;
+});
 engine.loadingUIBackgroundColor = "Purple";
 window.addEventListener("resize", () => engine.resize());

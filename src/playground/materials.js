@@ -1,7 +1,7 @@
-import * as BABYLON from 'babylonjs';
-
 const materials = {
     scene: null,
+    baseUrl: 'assets/',
+
     createColor(color, hex) {
         this[color] = new BABYLON.StandardMaterial(`${color}`, this.scene);
         this[color].diffuseColor = new BABYLON.Color3.FromHexString(hex);
@@ -10,26 +10,26 @@ const materials = {
 
     createTexture(texture, format = 'jpg') {
         this[texture] = new BABYLON.StandardMaterial(`${texture}`, this.scene);
-        this[texture].diffuseTexture = new BABYLON.Texture(`assets/${texture}.${format}`, this.scene);
+        this[texture].diffuseTexture = new BABYLON.Texture(`${this.baseUrl}${texture}.${format}`, this.scene);
 
         return this[texture];
     },
 
-    createText({width, height}) {
-        const textGround = new BABYLON.DynamicTexture("textSurface", {width, height}, this.scene);
+    createText({width, height, text = ''}) {
+        const textGround = new BABYLON.DynamicTexture(text, {width, height}, this.scene);
         textGround.hasAlpha = true;
-        textGround.maxSimultaneousLights = 16;
+        // textGround.maxSimultaneousLights = 16;
 
-        const matGround = new BABYLON.StandardMaterial("Mat", this.scene);
+        const matGround = new BABYLON.StandardMaterial(text, this.scene);
         matGround.diffuseTexture = textGround;
-        matGround.maxSimultaneousLights = 16;
+        // matGround.maxSimultaneousLights = 16;
 
         return {textGround, matGround};
     },
 
     createVideo({videoURL, imgURL}) {
-        const mat = new BABYLON.StandardMaterial("mat", this.scene);
-        const videoTexture = new BABYLON.VideoTexture("video", [videoURL], this.scene, true, false, BABYLON.VideoTexture.TRILINEAR_SAMPLINGMODE, {
+        const mat = new BABYLON.StandardMaterial(videoURL, this.scene);
+        const videoTexture = new BABYLON.VideoTexture(videoURL, [`${this.baseUrl}${videoURL}`], this.scene, true, false, BABYLON.VideoTexture.TRILINEAR_SAMPLINGMODE, {
             poster: imgURL,
             autoUpdateTexture: true
         });
@@ -67,11 +67,18 @@ const mesh = {
         return box;
     },
 
+    createGround({width, height, ...generalParams}) {
+        const ground = BABYLON.MeshBuilder.CreateGround('ground', {width, height, subdivisions: 25}, this.scene);
+        this._generalParams(ground, generalParams);
+
+        return ground;
+    },
+
     setPhysics({impostor = 'BoxImpostor', mass = 0, restitution = 0, friction = 0.7}) {
         this.physicsImpostor = new BABYLON.PhysicsImpostor(this, BABYLON.PhysicsImpostor[impostor], {
             mass,
             friction,
-            restitution
+            restitution,
         }, this.scene);
     },
 
@@ -92,7 +99,7 @@ const drawText = ({x, y, z, text, size, multiplier = 3, height, inCenterX = fals
     const DTWidth = tmpctx.measureText(text).width + 8;
     const planeWidth = DTWidth * ratio;
 
-    const text2 = materials.createText({width: DTWidth, height: DTHeight});
+    const text2 = materials.createText({width: DTWidth, height: DTHeight, text});
     text2.textGround.drawText(text, 0, null, `${style} ${size}px Arial`, "#fff", null, true);
 
     mesh.createPlane({

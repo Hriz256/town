@@ -1,11 +1,11 @@
-import * as BABYLON from "babylonjs";
 import {materials, mesh} from "./materials";
 import '../meshwriter.min';
 import {Billboard, createBillboardText} from "./billboardsEnvironment/billboardsEnvironment";
 import {billboardsInfo} from "./billboardsEnvironment/billboardsData";
 import {createIcons} from "./icons";
+import {createFlagsOnBalloons} from './flags';
 
-const createStreetLamp = ({x, z, scene}) => {
+const createStreetLamp = ({x, z, scene, title}) => {
     BABYLON.SceneLoader.ImportMesh('', 'assets/lamp/', 'StreetLamp.obj', scene, newMeshes => {
         scene.getMeshByName('Plane_Plane.001').dispose();
 
@@ -39,7 +39,7 @@ const createStreetLamp = ({x, z, scene}) => {
         columnPart1.isVisible = false;
         columnPart2.isVisible = false;
 
-        const light = new BABYLON.PointLight("lamp", new BABYLON.Vector3(0, -columnHeight / 4, 1), scene);
+        const light = new BABYLON.PointLight(title, new BABYLON.Vector3(0, -columnHeight / 4, 1), scene);
         light.range = 50;
         light.parent = columnPart2;
     })
@@ -49,13 +49,13 @@ const createGround = (scene) => {
     const ground = BABYLON.Mesh.CreateGround("ground", 200, 200, 2, scene);
     materials['grass'].diffuseTexture.uScale = 400.0;
     materials['grass'].diffuseTexture.vScale = 400.0;
-    materials['grass'].maxSimultaneousLights = 16;
+    materials['grass'].maxSimultaneousLights = 32;
     materials['grass'].specularColor = new BABYLON.Color3(.1, .1, .1);
 
     ground.material = materials['grass'];
 
     ground.setPhysics = mesh.setPhysics;
-    ground.setPhysics({impostor: 'BoxImpostor'})
+    ground.setPhysics({})
 };
 
 const createBench = (scene) => {
@@ -118,13 +118,14 @@ let iconsFrame = [];
 
 const create = (scene) => {
     createGround(scene);
+    createFlagsOnBalloons(scene);
     iconsFrame = createIcons(scene);
 
     billboardsArray = Array.from(billboardsInfo, (item, index) => {
         const {x, z, size, url, text, width, height, videoURL} = item;
 
-        createStreetLamp({x: x - width - 0.75, z, scene}); // Фонарь справа от каждого билборда
-        index % 2 === 0 && createStreetLamp({x: x + 2.75, z, scene}); // Фонарь слева от 1 билборда
+        // createStreetLamp({x: x - width - 0.75, z, scene, title: url}); // Фонарь справа от каждого билборда
+        // index % 2 === 0 && createStreetLamp({x: x + 2.75, z, scene, title: url}); // Фонарь слева от 1 билборда
 
         text && createBillboardText({x, z: z, y: 0.05, text});
 

@@ -1,4 +1,3 @@
-import * as BABYLON from "babylonjs";
 import {materials, drawText} from "./materials";
 
 const createMeshByIntersect = ({x, y, z, scene, width, height}) => {

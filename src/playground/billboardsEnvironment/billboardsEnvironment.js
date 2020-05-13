@@ -1,4 +1,3 @@
-import * as BABYLON from "babylonjs";
 import {materials, drawText, mesh} from "../materials";
 import {createFrame} from "../frameIntersect";
 
@@ -7,6 +6,7 @@ class Billboard {
         this.scene = scene;
         this.timeout = 0;
         this.x = x;
+        this.y = 0;
         this.z = z;
         this.size = size;
         this.imgURL = url;
@@ -17,15 +17,12 @@ class Billboard {
         this.videoURL = videoURL;
         this.isVideoShow = false;
         this.videoFrameText = 'зона просмотра видео';
+        this.cubes = {};
 
         this.widthWithoutBorder = width - 2;
         this.heightWithoutBorder = height - 2;
 
-        this.billboard = new BABYLON.Mesh("billboard", this.scene);
-        this.billboard.position = new BABYLON.Vector3(this.x, 0, this.z);
-        // this.billboard.rotate(BABYLON.Axis.Y, -Math.PI / 10, BABYLON.Space.LOCAL);
-
-
+        this.createPhysicsZone();
         this.createPicture(false);
         videoURL && this.createVideoFrame();
     }
@@ -51,41 +48,60 @@ class Billboard {
     }
 
     getMaterial(xOffset, yOffset) {
-        const mat = new BABYLON.StandardMaterial("mat", this.scene);
-
-        mat.diffuseTexture = new BABYLON.Texture(this.imgURL, this.scene);
+        const mat = materials.createTexture(this.imgURL.slice(0, -4), this.imgURL.slice(-3));
         mat.diffuseTexture.uScale = 1 / this.widthWithoutBorder;
         mat.diffuseTexture.vScale = 1 / this.heightWithoutBorder;
         mat.diffuseTexture.uOffset = xOffset;
         mat.diffuseTexture.vOffset = yOffset;
-        mat.maxSimultaneousLights = 16;
+        // mat.maxSimultaneousLights = 16;
 
         return mat;
     }
 
+    createPhysicsZone() {
+        const width = this.widthWithoutBorder * this.size + 2 * this.size / 4;
+        const height = this.heightWithoutBorder * this.size + 2 * this.size / 4;
+
+        this.physicsZone = mesh.createBox({
+            size: {
+                x: width + 1,
+                y: height,
+                z: this.size * 2
+            },
+            position: {
+                x: this.x - width / 2,
+                y: height / 2,
+                z: this.z
+            },
+            material: materials['lightColor']
+        });
+
+        this.physicsZone.isVisible = false;
+    }
+
     createCube({x, y, posX, posY, sizeHeight, sizeWidth, isRecreate, isEven}) {
-        // Проверка через find нужна, потому что getChildren() даёт неправильный порядок
-        isRecreate && this.getCubes().find(item => item.currentIndex === this.currentIndex).dispose();
+        if (isRecreate) {
+            this.cubes[this.currentIndex].dispose();
+            this.cubes[this.currentIndex] = null;
+        }
 
         const pos = isEven ? posX - (sizeWidth / 2) : posX + (sizeWidth / 2);
 
-        const box = mesh.createBox({
+        this.cubes[this.currentIndex] = mesh.createBox({
             size: new BABYLON.Vector3(this.size, sizeWidth, sizeHeight),
-            position: new BABYLON.Vector3(pos, posY + sizeHeight / 2, 0),
+            position: new BABYLON.Vector3(pos, posY + sizeHeight / 2, this.z),
             rotation: new BABYLON.Vector3(-Math.PI / 2, Math.PI / 2, 0),
-            material: (x === 0 || x === this.widthQuantity - 1 || y === 0 || y === this.heightQuantity - 1) ?
+            material: (!x || x === this.widthQuantity - 1 || !y || y === this.heightQuantity - 1) ?
                 materials['green'] :
                 this.getMaterial((x - 1) / this.widthWithoutBorder, (y - 1) / this.heightWithoutBorder)
         });
 
-        box.setPhysics({mass: 0});
-        box.parent = this.billboard;
-        box.currentIndex = this.currentIndex; // Запоминаем индекс каждого куба, чтобы в дальнейшем проверять через него
+        this.cubes[this.currentIndex].material.alpha = 0.6;
     }
 
     async createPicture(isRecreate) {
-        let posX = 0;
-        let posY = 0; // на этом уровне находится земля
+        let posX = this.x;
+        let posY = this.y; // на этом уровне находится земля
 
         for (let y = 0; y < this.heightQuantity; y++) {
             const sizeHeight = y === 0 || y === this.heightQuantity - 1 ? this.size / 4 : this.size;
@@ -101,17 +117,21 @@ class Billboard {
                     }, this.timeout);
                 });
 
-                posX = isEven ? posX - sizeWidth : posX + sizeWidth;
                 this.currentIndex++;
+                posX = isEven ? posX - sizeWidth : posX + sizeWidth;
             }
 
             posY += sizeHeight;
         }
 
-        if (this.billboard.getChildren().length === this.heightQuantity * this.widthQuantity) { // Если создали все кубы, меняем значение
+        if (this.currentIndex === this.heightQuantity * this.widthQuantity) { // Если создали все кубы, меняем значение
             this.isChangeMass = false;
+            this.setAlpha();
         }
+    }
 
+    setAlpha() {
+        Array.from(Object.values(this.cubes), item => item.material.alpha = 1);
     }
 
     createVideo() {
@@ -149,7 +169,7 @@ class Billboard {
         this.frame.material = materials['green'];
         this.isVideoShow = true;
         this.video.isVisible = true;
-        this.getCubes().filter(i => i.material.name !== 'green').forEach(i => i.isVisible = false);
+        Object.values(this.cubes).filter(i => i.material.name !== 'green').forEach(i => i.isVisible = false);
         this.video.material.diffuseTexture.video.play();
     }
 
@@ -158,24 +178,20 @@ class Billboard {
         this.frame.material = materials['white'];
         this.isVideoShow = false;
         this.video.isVisible = false;
-        this.getCubes().forEach(i => i.isVisible = true);
+        Array.from(Object.values(this.cubes), item => item.isVisible = true);
         this.video.material.diffuseTexture.video.pause();
     }
 
     setPositiveMass() {
         this.isChangeMass = true;
-        this.getCubes().forEach(i => i.physicsImpostor.setMass(0.3));
-    }
-
-    getCubes() {
-        return this.billboard.getChildren();
+        Array.from(Object.values(this.cubes), item => item.setPhysics({mass: 0.3}));
     }
 
     recreate() {
         this.timeout = 50;
         this.currentIndex = 0;
 
-        setTimeout(() => this.createPicture(true), 2000);
+        setTimeout(() => this.createPicture(true), 5000);
     }
 }
 
@@ -200,15 +216,12 @@ const createBillboardText = ({x, z, y, text}) => {
     const descriptionLines = [];
     const step = Math.floor(text.description.length / 5); // 5 - число желаемых строк
 
-    let currentLine = '';
-
     Array.from(Array.from(text.description), (letter, index) => {
-        if (index % step === 0) {
-            currentLine = '';
+        if (!descriptionLines[Math.floor(index / step)]) {
+            descriptionLines[Math.floor(index / step)] = ''
         }
 
-        currentLine += letter;
-        descriptionLines[Math.floor(index / step)] = currentLine;
+        descriptionLines[Math.floor(index / step)] += letter;
     });
 
     draw({text: text.title, index: 0, multiplier: titleMultiplier});

@@ -1,4 +1,3 @@
-import * as BABYLON from 'babylonjs';
 import {materials} from "./playground/materials";
 import {billboardsArray, iconsFrame} from './playground/playground';
 
@@ -107,7 +106,7 @@ const createCar = ({scene}) => {
         }
     };
 
-    scene.registerBeforeRender(function () {
+    scene.registerBeforeRender(() => {
         billboardsArray.filter(i => i.frame).forEach(item => {
             if (chassisMesh.intersectsMesh(item.frame, false) && !item.isVideoShow &&
                 (chassisMesh.position.x !== 0 && chassisMesh.position.z !== 0)) {
@@ -116,6 +115,14 @@ const createCar = ({scene}) => {
 
             if (!chassisMesh.intersectsMesh(item.frame, false) && item.isVideoShow) {
                 item.hideVideo();
+            }
+        });
+
+        Array.from(billboardsArray, item => {
+            if (chassisMesh.intersectsMesh(item.physicsZone, false) && !item.isChangeMass &&
+                (chassisMesh.position.x !== 0 && chassisMesh.position.z !== 0)) {
+                item.setPositiveMass();
+                item.recreate();
             }
         });
 
@@ -237,14 +244,14 @@ function createVehicle(pos, quat, scene) {
     body.setActivationState(4);
 
     function collisionCallbackFunc(cp, colObj0, colObj1) {
-        billboardsArray.forEach((item, index) => {
-            const isFind = item.billboard.getChildren().find(i => i.physicsImpostor.physicsBody.ptr === colObj1);
-
-            if (!item.isChangeMass && isFind) {
-                item.setPositiveMass();
-                item.recreate(index);
-            }
-        });
+        // Array.from(billboardsArray, item => {
+        //     const isFind = item.walls.find(i => i.physicsImpostor.physicsBody.ptr === colObj1);
+        //
+        //     if (!item.isChangeMass && isFind) {
+        //         item.setPositiveMass();
+        //         item.recreate();
+        //     }
+        // });
     }
 
     const collisionCallbackPointer = Ammo.addFunction(collisionCallbackFunc);
