@@ -1,10 +1,10 @@
-import createCar from "./car";
-import {materials, mesh} from "./playground/materials";
-import create from "./playground/playground";
+import * as BABYLON from 'babylonjs';
+import 'babylonjs-loaders';
+import './index.css';
+import './preloader';
+import {main} from "./main";
 
 const canvas = document.getElementById("renderCanvas");
-let scene = null;
-
 const createDefaultEngine = () => new BABYLON.Engine(canvas, true, {preserveDrawingBuffer: true, stencil: true});
 
 const createScene = function () {
@@ -18,26 +18,20 @@ const createScene = function () {
 
     scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.AmmoJSPlugin());
 
-    mesh.scene = scene;
-    materials.scene = scene;
-    materials.createColor('green', '#1C5030');
-    materials.createColor('lightColor', '#feff7f');
-    materials.createColor('white', '#ffffff');
-    materials.createTexture('grass');
+    // const plugin = scene.getPhysicsEngine().getPhysicsPlugin();
+    // plugin.setTimeStep(1/10);
+    //
+    // plugin.setFixedTimeStep(1/10);
+    //
+    // plugin.setMaxSteps(10);
 
-    materials.createTexture('icons/enter', 'png');
-    materials['icons/enter'].diffuseTexture.hasAlpha = true;
-
-    materials.createTexture('tyre2', 'png');
-
-    create(scene);
-    camera.lockedTarget = createCar({scene, engine, camera});
+    main({scene, camera});
 
     return scene;
 };
 
 const engine = createDefaultEngine();
-scene = createScene();
+const scene = createScene();
 
 if (!engine) throw 'engine should not be null.';
 
@@ -45,5 +39,4 @@ engine.runRenderLoop(() => {
     scene && scene.render();
     document.getElementById('fps').innerHTML = `${engine.getFps().toFixed()} fps`;
 });
-engine.loadingUIBackgroundColor = "Purple";
 window.addEventListener("resize", () => engine.resize());

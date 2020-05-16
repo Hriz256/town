@@ -26,7 +26,13 @@ const createFlag = (flag, scene) => {
         const {position, width, height} = flag[1];
         const balloon = new BABYLON.Mesh('', scene);
 
-        Array.from(newMeshes, item => item.parent = balloon);
+        Array.from(newMeshes, item => {
+            item.parent = balloon;
+            item.material =  materials.createTexture(
+                `environment/${flag[0]}Pattern`,
+                `${flag[0] === 'russian' ? 'jpg' : 'png' }`
+            );
+        });
 
         balloon.scaling.set(0.5, 0.5, 0.5);
         balloon.position.set(position.x - width / 2, position.y + height / 2, position.z);

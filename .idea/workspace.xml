@@ -2,18 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="494f19c3-024e-4c79-9be4-54ffcb83f6a5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/playground/flags.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/index.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/joystick.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/preloader.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/lamp/ballon.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/lamp/ballon.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/car.obj" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/car.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/mustang_GT.mtl" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/car.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/car.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/playground/billboardsEnvironment/billboardsData.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/playground/billboardsEnvironment/billboardsData.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/playground/billboardsEnvironment/billboardsEnvironment.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/playground/billboardsEnvironment/billboardsEnvironment.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/playground/frameIntersect.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/playground/frameIntersect.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/playground/materials.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/playground/materials.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/playground/flags.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/playground/flags.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/playground/playground.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/playground/playground.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scripts/babylon.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/scripts/babylon.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webpack.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/webpack.config.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -25,6 +28,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="CSS File" />
         <option value="JavaScript File" />
       </list>
     </option>
@@ -39,6 +43,7 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2019.2.4\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
@@ -99,7 +104,9 @@
       <workItem from="1589270472663" duration="2130000" />
       <workItem from="1589273025409" duration="2308000" />
       <workItem from="1589291694384" duration="9706000" />
-      <workItem from="1589354123003" duration="31466000" />
+      <workItem from="1589354123003" duration="31713000" />
+      <workItem from="1589482933310" duration="4534000" />
+      <workItem from="1589557514778" duration="16145000" />
     </task>
     <servers />
   </component>

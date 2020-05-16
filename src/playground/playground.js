@@ -47,6 +47,7 @@ const createStreetLamp = ({x, z, scene, title}) => {
 
 const createGround = (scene) => {
     const ground = BABYLON.Mesh.CreateGround("ground", 200, 200, 2, scene);
+    materials.createTexture('grass');
     materials['grass'].diffuseTexture.uScale = 400.0;
     materials['grass'].diffuseTexture.vScale = 400.0;
     materials['grass'].maxSimultaneousLights = 32;
@@ -116,7 +117,7 @@ const createPhysicsText = ({text, pos, thickness = 15, scene}) => {
 let billboardsArray;
 let iconsFrame = [];
 
-const create = (scene) => {
+const createPlayground = scene => {
     createGround(scene);
     createFlagsOnBalloons(scene);
     iconsFrame = createIcons(scene);
@@ -157,5 +158,5 @@ const create = (scene) => {
     // createBench()
 };
 
-export default create;
+export {createPlayground};
 export {billboardsArray, iconsFrame};
