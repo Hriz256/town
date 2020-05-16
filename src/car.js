@@ -168,7 +168,7 @@ function createVehicle(scene) {
 
     const assetsManager = new BABYLON.AssetsManager(scene);
     const meshTask = assetsManager.addMeshTask("car task", "", "assets/", "car.obj");
-    const wheelTask = assetsManager.addMeshTask("wheel task", "", "assets/", "wheel.obj");
+    const wheelTask = assetsManager.addMeshTask("wheel task", "", "assets/", "wheel.gltf");
 
     meshTask.onSuccess = function ({loadedMeshes}) {
         const carBody = new BABYLON.Mesh("main", scene);
@@ -190,8 +190,10 @@ function createVehicle(scene) {
         const frontLeft = new BABYLON.Mesh('wheel', scene);
         Array.from(loadedMeshes, item => {
             item.parent = frontLeft;
+            item.
         });
         frontLeft.rotationQuaternion = new BABYLON.Quaternion();
+        // scene.getMeshByName('car.093_car.200').material = materials.createTexture('Tyre', 'png');
 
         const frontRight = frontLeft.clone('wheel2');
         const backLeft = frontLeft.clone('wheel3');
