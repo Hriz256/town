@@ -148,7 +148,7 @@ function createVehicle(scene) {
     car.vehicle.setCoordinateSystem(0, 1, 2);
     physicsWorld.addAction(car.vehicle);
 
-    function addWheel(isFront, pos, radius, width, index) {
+    function addWheel(isFront, pos, radius, wheel, index) {
         const wheelInfo = car.vehicle.addWheel(
             pos,
             wheelDirectionCS0,
@@ -164,8 +164,9 @@ function createVehicle(scene) {
         wheelInfo.set_m_maxSuspensionForce(600000);
         wheelInfo.set_m_frictionSlip(40);
         wheelInfo.set_m_rollInfluence(rollInfluence);
-
-        car.wheelMeshes[index] = createWheelMesh(radius, width, scene);
+        console.log(wheel)
+        wheel.rotationQuaternion = new BABYLON.Quaternion();
+        car.wheelMeshes[index] = wheel;
     }
 
     const assetsManager = new BABYLON.AssetsManager(scene);
@@ -174,23 +175,45 @@ function createVehicle(scene) {
     meshTask.onSuccess = function ({loadedMeshes}) {
         const carBody = new BABYLON.Mesh("main", scene);
 
+        const wheels = [
+            'front_right_car.095',
+            'back_right_car.107',
+            'back_left_car.108',
+            'front_left_car.109'
+        ];
+
         Array.from(loadedMeshes, item => {
             item.position.y = 3;
             item.position.x = 0.2;
-            item.parent = carBody;
-        });
 
-        // scene.getMeshByName('wheel_lf_pivot').dispose();
+            if (wheels.find(name => name !== item.name)) {
+                item.parent = carBody;
+            } else {
+                item.dispose()
+            }
+        });
         //
-        // loadedMeshes[96].dispose();
-        // loadedMeshes[97].dispose();
-        // loadedMeshes[99].dispose();
-        // loadedMeshes[100].dispose();
-        // loadedMeshes[102].dispose();
-        // loadedMeshes[103].dispose();
-        // loadedMeshes[104].dispose();
-        // loadedMeshes[106].dispose();
-        // loadedMeshes[107].dispose();
+        // const backLeftWheel = new BABYLON.Mesh('back_left_wheel', scene);
+        // scene.getMeshByName('back_left_car.108').parent = backLeftWheel;
+        //
+        // const backRightWheel = new BABYLON.Mesh('back_right_wheel', scene);
+        // scene.getMeshByName( 'back_right_car.107').parent = backRightWheel;
+        //
+        // const frontRightWheel = new BABYLON.Mesh('front_right_wheel', scene);
+        // scene.getMeshByName('front_right_car.095').parent = frontRightWheel;
+        //
+        // const frontLeftWheel = new BABYLON.Mesh('front_left_wheel', scene);
+        // scene.getMeshByName('front_left_car.109').parent = frontLeftWheel;
+        //
+        //
+        // // Array.from({length: 5}, (i, index) => {
+        //     scene.getMeshByName(`mesh_mm10${index}`).dispose();
+        // });
+        //
+        // Array.from({length: 8}, (i, index) => {
+        //     scene.getMeshByName(`mesh_mm9${index + 2}`).dispose();
+        // });
+
 
         carBody.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
         carBody.parent = car.chassisMesh;
@@ -199,10 +222,10 @@ function createVehicle(scene) {
 
         car.chassisMesh.isVisible = false;
 
-        addWheel(true, new Ammo.btVector3(wheelHalfTrackFront, wheelAxisHeightFront, wheelAxisFrontPosition), wheelRadiusFront, wheelWidthFront, car.front_left);
-        addWheel(true, new Ammo.btVector3(-wheelHalfTrackFront, wheelAxisHeightFront, wheelAxisFrontPosition), wheelRadiusFront, wheelWidthFront, car.front_right);
-        addWheel(false, new Ammo.btVector3(-wheelHalfTrackBack, wheelAxisHeightBack, wheelAxisPositionBack), wheelRadiusBack, wheelWidthBack, car.back_left);
-        addWheel(false, new Ammo.btVector3(wheelHalfTrackBack, wheelAxisHeightBack, wheelAxisPositionBack), wheelRadiusBack, wheelWidthBack, car.back_right);
+        // addWheel(true, new Ammo.btVector3(wheelHalfTrackFront, wheelAxisHeightFront, wheelAxisFrontPosition), wheelRadiusFront, scene.getMeshByName('front_left_car.109'), car.front_left);
+        // addWheel(true, new Ammo.btVector3(-wheelHalfTrackFront, wheelAxisHeightFront, wheelAxisFrontPosition), wheelRadiusFront, scene.getMeshByName('front_right_car.095'), car.front_right);
+        // addWheel(false, new Ammo.btVector3(-wheelHalfTrackBack, wheelAxisHeightBack, wheelAxisPositionBack), wheelRadiusBack, scene.getMeshByName('back_left_car.108'), car.back_left);
+        // addWheel(false, new Ammo.btVector3(wheelHalfTrackBack, wheelAxisHeightBack, wheelAxisPositionBack), wheelRadiusBack, scene.getMeshByName( 'back_right_car.107'), car.back_right);
 
         vehicleReady = true;
     };
