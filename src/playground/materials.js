@@ -6,6 +6,8 @@ const materials = {
         this[color] = new BABYLON.StandardMaterial(`${color}`, this.scene);
         this[color].diffuseColor = new BABYLON.Color3.FromHexString(hex);
         this[color].emissiveColor = new BABYLON.Color3.FromHexString(hex);
+
+        return this[color];
     },
 
     createTexture(texture, format = 'jpg') {

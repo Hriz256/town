@@ -1,26 +1,26 @@
 const billboardsInfo = [
-    // {
-    //     x: -40,
-    //     z: 0,
-    //     size: 1,
-    //     width: 14,
-    //     height: 8,
-    //     url: 'billboard/firelink.png',
-    //     text: {
-    //         title: 'FireLink (слоты) 2d',
-    //         description: 'Написана на Phaser3. Имеет 3 различные локации. Адаптивна под любые устройства. ' +
-    //             'Основные сложности разработки: большое количество анимаций, кручение барабана'
-    //     }
-    // },
-    // {
-    //     x: -57,
-    //     z: 0,
-    //     size: 1,
-    //     width: 14,
-    //     height: 8,
-    //     url: 'billboard/firelink3.png',
-    //     videoURL: 'lamp/video.mp4'
-    // },
+    {
+        x: -40,
+        z: 0,
+        size: 1,
+        width: 14,
+        height: 8,
+        url: 'billboard/firelink.png',
+        text: {
+            title: 'FireLink (слоты) 2d',
+            description: 'Написана на Phaser3. Имеет 3 различные локации. Адаптивна под любые устройства. ' +
+                'Основные сложности разработки: большое количество анимаций, кручение барабана'
+        }
+    },
+    {
+        x: -57,
+        z: 0,
+        size: 1,
+        width: 14,
+        height: 8,
+        url: 'billboard/firelink3.png',
+        videoURL: 'lamp/video.mp4'
+    },
     // {
     //     x: 67,
     //     z: 0,

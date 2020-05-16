@@ -4,6 +4,8 @@ import {createVehicle, car} from "./car";
 import {materials, mesh} from "./playground/materials";
 import {createPlayground} from "./playground/playground";
 
+const isMobile = true;
+
 const actions = {
     accelerate: false,
     brake: false,
@@ -17,7 +19,60 @@ const keysActions = {
     "KeyD": 'right'
 };
 
-const update = (scene) => {
+const pcControl = () => {
+    if (actions.acceleration) {
+        if (speed < -1) {
+            car.breakingForce = car.maxBreakingForce;
+        } else if (speed >= -1 && speed < 110) {
+            car.engineForce = car.maxEngineForce;
+        }
+
+    } else if (actions.braking) {
+        if (speed > 1) {
+            car.breakingForce = car.maxBreakingForce;
+        } else if (speed <= 1 && speed > -60) {
+            car.engineForce = -car.maxEngineForce;
+        }
+    }
+
+    if (!actions.acceleration && !actions.braking) {
+        speed > 0 ? car.breakingForce = car.maxBreakingForce : car.engineForce = car.maxEngineForce;
+
+        if (speed < 1 && speed > -1) {
+            car.engineForce = 0;
+        }
+    }
+
+    if (actions.right) {
+        if (car.vehicleSteering < car.steeringClamp) {
+            car.vehicleSteering += car.steeringIncrement;
+        }
+
+    } else if (actions.left) {
+        if (car.vehicleSteering > -car.steeringClamp) {
+            car.vehicleSteering -= car.steeringIncrement;
+        }
+
+    } else {
+        car.vehicleSteering = 0;
+    }
+};
+
+const mobileControl = (joystick) => {
+    const maxX = 100;
+    const maxY = 100;
+
+   if (joystick.getX()) {
+       if (car.vehicleSteering > -car.steeringClamp && car.vehicleSteering < car.steeringClamp) {
+           car.vehicleSteering = joystick.getX() / (maxX / car.steeringClamp);
+       }
+   } else {
+       car.vehicleSteering = 0;
+   }
+
+};
+
+const update = (scene, joystick) => {
     scene.onPointerDown = (evt, pickResult) => {
         const icon = iconsFrame.find(icon => icon.isPictureChange);
 
@@ -58,48 +113,15 @@ const update = (scene) => {
             }
         });
 
+        // console.log(joystick.getX())
+
 
         // if (car.vehicleReady) {
         let speed = car.vehicle.getCurrentSpeedKmHour();
         car.breakingForce = 0;
         car.engineForce = 0;
 
-        if (actions.acceleration) {
-            if (speed < -1) {
-                car.breakingForce = car.maxBreakingForce;
-            } else if (speed >= -1 && speed < 110) {
-                car.engineForce = car.maxEngineForce;
-            }
-
-        } else if (actions.braking) {
-            if (speed > 1) {
-                car.breakingForce = car.maxBreakingForce;
-            } else if (speed <= 1 && speed > -60) {
-                car.engineForce = -car.maxEngineForce;
-            }
-        }
-
-        if (!actions.acceleration && !actions.braking) {
-            speed > 0 ? car.breakingForce = car.maxBreakingForce : car.engineForce = car.maxEngineForce;
-
-            if (speed < 1 && speed > -1) {
-                car.engineForce = 0;
-            }
-        }
-
-        if (actions.right) {
-            if (car.vehicleSteering < car.steeringClamp) {
-                car.vehicleSteering += car.steeringIncrement;
-            }
-
-        } else if (actions.left) {
-            if (car.vehicleSteering > -car.steeringClamp) {
-                car.vehicleSteering -= car.steeringIncrement;
-            }
-
-        } else {
-            car.vehicleSteering = 0;
-        }
+        isMobile ? mobileControl(joystick) : pcControl();
 
         car.vehicle.applyEngineForce(car.engineForce, car.front_left);
         car.vehicle.applyEngineForce(car.engineForce, car.front_right);
@@ -113,17 +135,17 @@ const update = (scene) => {
         car.vehicle.setSteeringValue(car.vehicleSteering, car.front_right);
 
 
-        let tm, p, q, i;
+        let tm, p, q;
 
-        for (i = 0; i < car.vehicle.getNumWheels(); i++) {
-            car.vehicle.updateWheelTransform(i, true);
-            tm = car.vehicle.getWheelTransformWS(i);
+        Array.from({length: car.vehicle.getNumWheels()}, (i, index) => {
+            car.vehicle.updateWheelTransform(index, true);
+            tm = car.vehicle.getWheelTransformWS(index);
             p = tm.getOrigin();
             q = tm.getRotation();
-            car.wheelMeshes[i].position.set(p.x(), p.y(), p.z());
-            car.wheelMeshes[i].rotationQuaternion.set(q.x(), q.y(), q.z(), q.w());
-            car.wheelMeshes[i].rotate(BABYLON.Axis.Z, Math.PI / 2);
-        }
+            car.wheelMeshes[index].position.set(p.x(), p.y(), p.z());
+            car.wheelMeshes[index].rotationQuaternion.set(q.x(), q.y(), q.z(), q.w());
+            car.wheelMeshes[index].rotate(BABYLON.Axis.Z, Math.PI / 2);
+        });
 
         tm = car.vehicle.getChassisWorldTransform();
         p = tm.getOrigin();
@@ -139,16 +161,16 @@ const main = ({scene, camera}) => {
 
     materials.scene = scene;
     materials.createColor('green', '#1C5030');
-    materials.createColor('lightColor', '#feff7f');
     materials.createColor('white', '#ffffff');
+    materials.createColor('lightColor', '#feff7f');
     materials.createTexture('icons/enter', 'png');
     materials['icons/enter'].diffuseTexture.hasAlpha = true;
 
-    const joystick = createJoystick(); //
+    const joystick = createJoystick();
     createPlayground(scene); // Создаём площадку со всеми объектами
     camera.lockedTarget = createVehicle(scene); // Создаём машинку
 
-    update(scene);
+    update(scene, joystick);
 };
 
 window.addEventListener('keydown', (e) => {
