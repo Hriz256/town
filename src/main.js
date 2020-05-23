@@ -69,7 +69,6 @@ const mobileControl = (joystick, speed) => {
 
     if (joystick.getY() > 0) {
         if (speed > 1) {
-            console.log(1)
             car.breakingForce = (car.maxBreakingForce / joystick.getMaxDistance()) * joystick.getY();
         } else if (speed <= 1 && speed > -60) {
             car.engineForce = (car.maxEngineForce / -joystick.getMaxDistance()) * joystick.getY();
@@ -98,40 +97,40 @@ const update = (scene, joystick) => {
         }
     };
 
-    scene.registerBeforeRender(() => {
-        billboardsArray.filter(i => i.frame).forEach(item => {
-            if (car.chassisMesh.intersectsMesh(item.frame, false) && !item.isVideoShow &&
-                (car.chassisMesh.position.x && car.chassisMesh.position.z)) {
-                item.showVideo();
-            }
 
-            if (!car.chassisMesh.intersectsMesh(item.frame, false) && item.isVideoShow) {
-                item.hideVideo();
-            }
-        });
+    if (car.vehicleReady) {
+        scene.registerBeforeRender(() => {
+            billboardsArray.filter(i => i.frame).forEach(item => {
+                if (car.chassisMesh.intersectsMesh(item.frame, false) && !item.isVideoShow &&
+                    (car.chassisMesh.position.x && car.chassisMesh.position.z)) {
+                    item.showVideo();
+                }
 
-        Array.from(billboardsArray, item => {
-            if (car.chassisMesh.intersectsMesh(item.physicsZone, false) && !item.isChangeMass &&
-                (car.chassisMesh.position.x && car.chassisMesh.position.z)) {
-                item.setPositiveMass();
-                item.recreate();
-            }
-        });
+                if (!car.chassisMesh.intersectsMesh(item.frame, false) && item.isVideoShow) {
+                    item.hideVideo();
+                }
+            });
 
-        Array.from(iconsFrame, icon => {
-            if (car.chassisMesh.intersectsMesh(icon.frame, false) && !icon.isPictureChange &&
-                (car.chassisMesh.position.x && car.chassisMesh.position.z)) {
-                icon.showEnter();
-            }
+            Array.from(billboardsArray, item => {
+                if (car.chassisMesh.intersectsMesh(item.physicsZone, false) && !item.isChangeMass &&
+                    (car.chassisMesh.position.x && car.chassisMesh.position.z)) {
+                    item.setPositiveMass();
+                    item.recreate();
+                }
+            });
 
-            if (!car.chassisMesh.intersectsMesh(icon.frame, false) && icon.isPictureChange &&
-                (car.chassisMesh.position.x && car.chassisMesh.position.z)) {
-                icon.showEnter();
-            }
-        });
+            Array.from(iconsFrame, icon => {
+                if (car.chassisMesh.intersectsMesh(icon.frame, false) && !icon.isPictureChange &&
+                    (car.chassisMesh.position.x && car.chassisMesh.position.z)) {
+                    icon.showEnter();
+                }
 
+                if (!car.chassisMesh.intersectsMesh(icon.frame, false) && icon.isPictureChange &&
+                    (car.chassisMesh.position.x && car.chassisMesh.position.z)) {
+                    icon.showEnter();
+                }
+            });
 
-        if (car.vehicleReady) {
             const speed = car.vehicle.getCurrentSpeedKmHour();
             car.breakingForce = 0;
             car.engineForce = 0;
@@ -139,7 +138,7 @@ const update = (scene, joystick) => {
             isMobile ? mobileControl(joystick, speed) : pcControl(speed);
 
             car.vehicle.applyEngineForce(car.engineForce, car.front_left);
-            car.vehicle.applyEngineForce(car.engineForce, car.front_right);
+            car.vehicle.applyEngineForce(car.engineForce, car.back_left);
 
             car.vehicle.setBrake(car.breakingForce / 2, car.front_left);
             car.vehicle.setBrake(car.breakingForce / 2, car.front_right);
@@ -147,7 +146,7 @@ const update = (scene, joystick) => {
             car.vehicle.setBrake(car.breakingForce, car.back_right);
 
             car.vehicle.setSteeringValue(car.vehicleSteering, car.front_left);
-            car.vehicle.setSteeringValue(car.vehicleSteering, car.front_right);
+            car.vehicle.setSteeringValue(car.vehicleSteering, car.back_left);
 
 
             let tm, p, q;
@@ -167,15 +166,23 @@ const update = (scene, joystick) => {
             q = tm.getRotation();
             car.chassisMesh.position.set(p.x(), p.y(), p.z());
             car.chassisMesh.rotationQuaternion.set(q.x(), q.y(), q.z(), q.w());
-            car.chassisMesh.rotate(BABYLON.Axis.X, Math.PI);
-        }
+        })
+    }
+};
+
+const load = scene => {
+    const assetsManager = new BABYLON.AssetsManager(scene);
+    assetsManager.addMeshTask("car task", "", "assets/", "car.gltf");
+
+    assetsManager.load();
+
+    return new Promise(resolve => {
+        assetsManager.onFinish = tasks => resolve(tasks);
     });
 };
 
-const main = ({scene, camera}) => {
-    const assetsManager = new BABYLON.AssetsManager(scene);
-    const carTask = assetsManager.addMeshTask("car task", "", "assets/", "car.gltf");
-    // const wheelTask = assetsManager.addMeshTask("wheel task", "", "assets/", "wheel.gltf");
+const main = async ({scene, camera}) => {
+    const tasks = await load(scene);
 
     mesh.scene = scene;
 
@@ -188,11 +195,9 @@ const main = ({scene, camera}) => {
 
     const joystick = createJoystick();
     createPlayground(scene); // Создаём площадку со всеми объектами
-    camera.lockedTarget = createVehicle(scene, {carTask}); // Создаём машинку
+    camera.lockedTarget = createVehicle(scene, {carTask: tasks[0]}); // Создаём машинку
 
     update(scene, joystick);
-
-    assetsManager.load();
 };
 
 window.addEventListener('keydown', (e) => {

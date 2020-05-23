@@ -10,8 +10,12 @@ const createDefaultEngine = () => new BABYLON.Engine(canvas, true, {preserveDraw
 const createScene = function () {
     const scene = new BABYLON.Scene(engine);
 
-    const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
-    light.intensity = 0.9;
+    // const bottomLight = new BABYLON.HemisphericLight("bottomLight", new BABYLON.Vector3(0, -10, 0), scene);
+    // bottomLight.intensity = 1;
+
+    const upLight = new BABYLON.HemisphericLight("upLight", new BABYLON.Vector3(0, 10, 0), scene);
+    upLight.intensity = 1;
+
 
     const camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2.8, 30, new BABYLON.Vector3(0, 0, 0), scene);
     camera.attachControl(canvas, true);

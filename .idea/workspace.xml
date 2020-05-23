@@ -3,77 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="494f19c3-024e-4c79-9be4-54ffcb83f6a5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/Tyre.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/billboard/fireLink3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/billboard/firelink.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/billboard/lotto.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/billboard/lotto2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/billboard/race.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/billboard/roulette.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/billboard/roulette2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/body.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/brembo_spt2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/brembo_spt2.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/car.mtl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/car.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/carpback.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/carpback.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/carplate.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/carplate.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/chassis.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/chrome_material_07.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/cloth_brightgrey.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/cloth_brightgrey.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/digital_gauge.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/digital_gauge.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/glass_dam.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/interior_LOD0.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/interior_emissive_lod0.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/interior_emissive_lod0.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/interior_lights.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/interior_lod0.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/lamp/StreetLamp.fbx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/lamp/StreetLamp.mtl" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/lamp/StreetLamp.mtl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/lamp/StreetLamp.obj" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/lamp/StreetLamp.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/lamp/StreetLamp.ply" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/lamp/StreetLamp.stl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/leather.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/leather.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/leather_stripey_black.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/leather_stripey_black.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/lights_lod0.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/lights_lod0.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/misc_body.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/misc_body.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/mustang_misc.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/mustang_misc.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/nodamage_lod0.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/nodamage_lod0.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/plastic.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/plastic.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/plastic_black.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/plastic_black.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/plastic_black02.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/plastic_black02.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/plastic_dash.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/plastic_dash.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/resh.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/resh.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/scratch.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/tyre.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/undercarriage.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/undercarriage.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/vehiclelights.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/vehiclelights.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/vehiclelights_on.tga" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/wheel.gltf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/wheel_lod0.tga" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/car.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/car.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/joystick.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/joystick.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/playground/billboardsEnvironment/billboardsData.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/playground/billboardsEnvironment/billboardsData.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/playground/materials.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/playground/materials.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/playground/playground.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/playground/playground.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -164,7 +96,7 @@
       <workItem from="1589482933310" duration="4534000" />
       <workItem from="1589557514778" duration="42428000" />
       <workItem from="1589719624775" duration="13734000" />
-      <workItem from="1590175284541" duration="3009000" />
+      <workItem from="1590175284541" duration="18598000" />
     </task>
     <servers />
   </component>

@@ -23,15 +23,11 @@ const chassisHeight = 1;
 const chassisLength = 5.3;
 const massVehicle = 400;
 
-const wheelAxisPositionBack = -1.47; // расположение оси задних колёс
-const wheelRadiusBack = .4;
-const wheelHalfTrackBack = 0.95;
-const wheelAxisHeightBack = 0.4;
+const wheelRadiusBack = .5;
+const wheelAxisHeightBack = 0.5;
 
-const wheelAxisFrontPosition = 1.62; // расположение оси передних колёс
-const wheelRadiusFront = .4;
-const wheelHalfTrackFront = 0.95;
-const wheelAxisHeightFront = 0.4;
+const wheelRadiusFront = .5;
+const wheelAxisHeightFront = 0.5;
 
 const suspensionStiffness = 30; // насколько сильно машина будет проседать при разгоне и торможении
 const suspensionDamping = 0.3;
@@ -39,59 +35,25 @@ const suspensionCompression = 4.4;
 const suspensionRestLength = 0.6;
 const rollInfluence = 0.0;
 
-const headlights = {
-    spot: {
-        left: null,
-        right: null
-    },
-    point: {
-        left: null,
-        right: null
-    },
-    enable: true
-};
 
-const createHeadlights = (car, scene) => {
-    headlights.spot.left = new BABYLON.SpotLight("spotLight", new BABYLON.Vector3(-0.7, 0, -2.5), new BABYLON.Vector3(0, 10, -11), Math.PI / 2, 3, scene);
-    headlights.spot.left.parent = car;
-    headlights.spot.left.intensity = 10;
-    // light.diffuse = new BABYLON.Color3(1, 0, 0);
-
-    headlights.spot.right = new BABYLON.SpotLight("spotLight", new BABYLON.Vector3(0.68, 0, -2.5), new BABYLON.Vector3(0, 10, -11), Math.PI / 2, 3, scene);
-    headlights.spot.right.parent = car;
-    headlights.spot.right.intensity = 10;
-    // light2.diffuse = new BABYLON.Color3(1, 0, 0);
-
-    headlights.point.left = mesh.createSphere({
-        diameter: 0.1,
-        position: {x: -0.7, y: -0.29, z: -2.3},
-        material: materials['white']
+const createCarBody = (scene) => {
+    car.chassisMesh = mesh.createBox({
+        size: {x: chassisWidth, y: chassisHeight, z: chassisLength},
+        position: {x: 0, y: 0, z: 0},
+        material: materials['green']
     });
-    headlights.point.left.parent = car;
+    car.chassisMesh.rotationQuaternion = new BABYLON.Quaternion();
+    // car.chassisMesh.isVisible = false;
 
-    headlights.point.right = headlights.point.left.clone('rightPointlight');
-    headlights.point.right.position.set(0.68, -0.29, -2.3);
-};
-
-const enableHeadlights = () => {
-    headlights.enable = !headlights.enable;
-
-    Array.from(Object.values(headlights.spot), spot => spot.setEnabled(headlights.enable));
-    Array.from(Object.values(headlights.point), point => point.isVisible = headlights.enable);
+    scene.getMeshByName('__root__').rotationQuaternion = null;
+    scene.getMeshByName('__root__').rotation.set(0, Math.PI / -2, 0);
+    scene.getMeshByName('__root__').parent = car.chassisMesh;
 };
 
 function createVehicle(scene, {carTask, wheelTask}) {
     const quat = new BABYLON.Quaternion();
     const wheelDirectionCS0 = new Ammo.btVector3(0, -1, 0);
     const wheelAxleCS = new Ammo.btVector3(-1, 0, 0);
-
-    car.chassisMesh = mesh.createBox({
-        size: {x: chassisWidth, y: chassisHeight, z: chassisLength},
-        position: {x: 0, y: -4, z: 0},
-        material: materials['green']
-    });
-    car.chassisMesh.rotationQuaternion = new BABYLON.Quaternion();
-    car.chassisMesh.isVisible = false;
 
     const physicsWorld = scene.getPhysicsEngine().getPhysicsPlugin().world;
     const localInertia = new Ammo.btVector3(0, 0, 0);
@@ -133,7 +95,8 @@ function createVehicle(scene, {carTask, wheelTask}) {
             suspensionRestLength,
             radius,
             tuning,
-            isFront);
+            isFront
+        );
 
         wheelInfo.set_m_suspensionStiffness(suspensionStiffness);
         wheelInfo.set_m_wheelsDampingRelaxation(suspensionDamping);
@@ -145,42 +108,36 @@ function createVehicle(scene, {carTask, wheelTask}) {
         car.wheelMeshes[index] = wheel;
     };
 
-    carTask.onSuccess = ({loadedMeshes}) => {
-        Array.from(loadedMeshes, item => {
-            // item.position.set(0.02, 0.5, -0.3);
-            item.parent = car.chassisMesh;
-            // item.scaling.set(0.1, 0.1, 0.1);
-        });
 
-        createHeadlights(car.chassisMesh, scene);
-    };
+    createCarBody(scene);
 
-    // wheelTask.onSuccess = ({loadedMeshes}) => {
-    //     const frontLeft = new BABYLON.Mesh('wheel', scene);
-    //     Array.from(loadedMeshes, item => {
-    //         item.parent = frontLeft;
-    //         item.rotation.z = Math.PI / 2;
-    //         item.scaling.set(0.05, 0.05, 0.05);
-    //     });
-    //     frontLeft.rotationQuaternion = new BABYLON.Quaternion();
-    //
-    //     const frontRight = frontLeft.clone('wheel2');
-    //     const backLeft = frontLeft.clone('wheel3');
-    //     const backRight = frontLeft.clone('wheel4');
-    //
-    //     Array.from([...backRight.getChildren(), ...frontLeft.getChildren()], item => item.rotation.z = Math.PI / -2);
-    //
-    //     addWheel(true, new Ammo.btVector3(wheelHalfTrackFront, wheelAxisHeightFront, wheelAxisFrontPosition), wheelRadiusFront, frontLeft, car.front_left);
-    //     addWheel(true, new Ammo.btVector3(-wheelHalfTrackFront, wheelAxisHeightFront, wheelAxisFrontPosition), wheelRadiusFront, frontRight, car.front_right);
-    //     addWheel(false, new Ammo.btVector3(-wheelHalfTrackBack, wheelAxisHeightBack, wheelAxisPositionBack), wheelRadiusBack, backLeft, car.back_left);
-    //     addWheel(false, new Ammo.btVector3(wheelHalfTrackBack, wheelAxisHeightBack, wheelAxisPositionBack), wheelRadiusBack, backRight, car.back_right);
-    //
-    //     car.vehicleReady = true;
-    // };
+    Array.from(scene.getMeshByName('__root__').getChildren(), item => {
+        switch (item.name) {
+            case 'Front_wheel':
+                item.parent = null;
+                addWheel(true, new Ammo.btVector3(item.position.z, wheelAxisHeightFront, item.position.x), wheelRadiusFront, item, car.front_left);
+                break;
+            case 'Front_wheel.001':
+                item.parent = null;
+                addWheel(false, new Ammo.btVector3(item.position.z, wheelAxisHeightFront, item.position.x), wheelRadiusFront, item, car.back_left);
+                break;
+            case 'Rear_wheel':
+                item.parent = null;
+                addWheel(true, new Ammo.btVector3(item.position.z, wheelAxisHeightBack, item.position.x), wheelRadiusBack, item, car.front_right);
+                break;
+            case 'Rear_wheel.001':
+                item.parent = null;
+                addWheel(false, new Ammo.btVector3(item.position.z, wheelAxisHeightBack, item.position.x), wheelRadiusBack, item, car.back_right);
+                break;
+            default:
+                break;
+        }
+    });
+
+
+    car.vehicleReady = true;
 
     return car.chassisMesh;
 }
-
-window.addEventListener('keyup', e => e.code === 'KeyL' && enableHeadlights());
 
 export {createVehicle, car};
