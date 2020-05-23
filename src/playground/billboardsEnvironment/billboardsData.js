@@ -5,29 +5,29 @@ const billboardsInfo = [
         size: 1,
         width: 14,
         height: 8,
-        url: 'billboard/firelink.png',
+        url: 'billboards/firelink.jpg',
         text: {
             title: 'FireLink (слоты) 2d',
             description: 'Написана на Phaser3. Имеет 3 различные локации. Адаптивна под любые устройства. ' +
                 'Основные сложности разработки: большое количество анимаций, кручение барабана'
         }
     },
-    {
-        x: -57,
-        z: 0,
-        size: 1,
-        width: 14,
-        height: 8,
-        url: 'billboard/firelink3.png',
-        videoURL: 'lamp/video.mp4'
-    },
+    // {
+    //     x: -57,
+    //     z: 0,
+    //     size: 1,
+    //     width: 14,
+    //     height: 8,
+    //     url: 'billboards/firelink2.jpg',
+    //     videoURL: 'lamp/video.mp4'
+    // },
     // {
     //     x: 67,
     //     z: 0,
     //     size: 1,
     //     width: 14,
     //     height: 8,
-    //     url: 'billboard/roulette.png',
+    //     url: 'billboards/roulette.jpg',
     //     text: {
     //         title: 'Рулетка 2d',
     //         description: 'Написана на Phaser3. В игре есть десктопная и мобильная версии. Основные сложности разработки:' +
@@ -40,7 +40,7 @@ const billboardsInfo = [
     //     size: 1,
     //     width: 14,
     //     height: 8,
-    //     url: 'billboard/roulette2.png',
+    //     url: 'billboards/roulette2.jpg',
     //     videoURL: 'lamp/video.mp4'
     // },
     // {
@@ -49,7 +49,7 @@ const billboardsInfo = [
     //     size: 1,
     //     width: 14,
     //     height: 8,
-    //     url: 'billboard/race.png',
+    //     url: 'billboards/race.jpg',
     //     text: {
     //         title: 'Гонки 2d',
     //         description: ''
@@ -61,7 +61,7 @@ const billboardsInfo = [
     //     size: 1,
     //     width: 14,
     //     height: 8,
-    //     url: 'billboard/race.png',
+    //     url: 'billboards/race.jpg',
     //     videoURL: 'lamp/video.mp4'
     // },
     // {
@@ -70,7 +70,7 @@ const billboardsInfo = [
     //     size: 1,
     //     width: 14,
     //     height: 8,
-    //     url: 'billboard/lotto.png',
+    //     url: 'billboards/lotto.jpg',
     //     text: {
     //         title: 'Лотто 3d',
     //         description: ''
@@ -82,7 +82,7 @@ const billboardsInfo = [
     //     size: 1,
     //     width: 14,
     //     height: 8,
-    //     url: 'billboard/lotto2.png',
+    //     url: 'billboards/lotto2.jpg',
     //     videoURL: 'lamp/video.mp4'
     // }
 ];

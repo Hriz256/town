@@ -7,8 +7,6 @@ import {createFlagsOnBalloons} from './flags';
 
 const createStreetLamp = ({x, z, scene, title}) => {
     BABYLON.SceneLoader.ImportMesh('', 'assets/lamp/', 'StreetLamp.obj', scene, newMeshes => {
-        scene.getMeshByName('Plane_Plane.001').dispose();
-
         const columnHeight = 9;
 
         const columnPart2 = mesh.createBox({
@@ -39,9 +37,9 @@ const createStreetLamp = ({x, z, scene, title}) => {
         columnPart1.isVisible = false;
         columnPart2.isVisible = false;
 
-        const light = new BABYLON.PointLight(title, new BABYLON.Vector3(0, -columnHeight / 4, 1), scene);
-        light.range = 50;
-        light.parent = columnPart2;
+        // const light = new BABYLON.PointLight(title, new BABYLON.Vector3(0, -columnHeight / 4, 1), scene);
+        // light.range = 50;
+        // light.parent = columnPart2;
     })
 };
 
@@ -125,8 +123,8 @@ const createPlayground = scene => {
     billboardsArray = Array.from(billboardsInfo, (item, index) => {
         const {x, z, size, url, text, width, height, videoURL} = item;
 
-        // createStreetLamp({x: x - width - 0.75, z, scene, title: url}); // Фонарь справа от каждого билборда
-        // index % 2 === 0 && createStreetLamp({x: x + 2.75, z, scene, title: url}); // Фонарь слева от 1 билборда
+        createStreetLamp({x: x - width - 0.75, z, scene, title: url}); // Фонарь справа от каждого билборда
+        index % 2 === 0 && createStreetLamp({x: x + 2.75, z, scene, title: url}); // Фонарь слева от 1 билборда
 
         text && createBillboardText({x, z: z, y: 0.05, text});
 
@@ -148,7 +146,7 @@ const createPlayground = scene => {
     letters.forEach(i => {
         const letterWidth = createPhysicsText({
             text: i,
-            pos: new BABYLON.Vector3(21 + x, 5.5, 15),
+            pos: new BABYLON.Vector3(21 + x, 2.5, 15),
             scene
         });
 

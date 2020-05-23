@@ -1,7 +1,7 @@
 import * as GUI from 'babylonjs-gui';
 
 const makeThumbArea = (name, thickness, color, background) => {
-    let circle = new GUI.Ellipse();
+    const circle = new GUI.Ellipse();
     circle.name = name;
     circle.thickness = thickness;
     circle.color = color;
@@ -15,80 +15,76 @@ const makeThumbArea = (name, thickness, color, background) => {
 };
 
 const createJoystick = () => {
-    const adt = GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI');
-    const sideJoystickOffset = 150;
+    const adt = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI');
+    const canvas = document.getElementById('renderCanvas');
+    const sideJoystickOffset = -150;
     const bottomJoystickOffset = -50;
-    let xAddPos = 0;
-    let yAddPos = 0;
+
+    const bigR = 100;
+    const smallR = 30;
 
     const leftThumbContainer = makeThumbArea('leftThumb', 2, 'blue', null);
-    leftThumbContainer.height = '200px';
-    leftThumbContainer.width = '200px';
+    leftThumbContainer.height = `${bigR * 2}px`;
+    leftThumbContainer.width = `${bigR * 2}px`;
     leftThumbContainer.isPointerBlocker = true;
-    leftThumbContainer.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-    leftThumbContainer.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    leftThumbContainer.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    leftThumbContainer.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
     leftThumbContainer.alpha = 0.4;
     leftThumbContainer.left = sideJoystickOffset;
     leftThumbContainer.top = bottomJoystickOffset;
 
-    const leftInnerThumbContainer = makeThumbArea('leftInnterThumb', 4, 'blue', null);
-    leftInnerThumbContainer.height = '80px';
-    leftInnerThumbContainer.width = '80px';
-    leftInnerThumbContainer.isPointerBlocker = true;
-    leftInnerThumbContainer.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-    leftInnerThumbContainer.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
-
-
     const leftPuck = makeThumbArea('leftPuck', 0, 'blue', 'blue');
-    leftPuck.height = '60px';
-    leftPuck.width = '60px';
+    leftPuck.height = `${smallR * 2}px`;
+    leftPuck.width = `${smallR * 2}px`;
     leftPuck.isPointerBlocker = true;
-    leftPuck.horizontalAlignment = GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-    leftPuck.verticalAlignment = GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+    leftPuck.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+    leftPuck.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+    leftPuck.isDown = false;
 
+    document.addEventListener('pointermove', e => {
+        if (leftPuck.isDown) {
+            const xAddPos = (canvas.width - -sideJoystickOffset - bigR) - e.offsetX;
+            const yAddPos = (canvas.height - -bottomJoystickOffset - bigR) - e.offsetY;
+            const angle = Math.atan2(yAddPos, xAddPos);
+            const distance = Math.min(bigR - smallR, Math.hypot(yAddPos, xAddPos));
 
-    leftThumbContainer.onPointerDownObservable.add(coordinates => {
-        leftPuck.isVisible = true;
-        leftPuck.floatLeft = coordinates.x - (leftThumbContainer._currentMeasure.width * .5) - sideJoystickOffset;
-        leftPuck.left = leftPuck.floatLeft;
-        leftPuck.floatTop = adt._canvas.height - coordinates.y - (leftThumbContainer._currentMeasure.height * .5) + bottomJoystickOffset;
-        leftPuck.top = leftPuck.floatTop * -1;
-        leftPuck.isDown = true;
-        leftThumbContainer.alpha = 0.9;
+            leftPuck.left = -Math.cos(angle) * distance;
+            leftPuck.top = -Math.sin(angle) * distance;
+        }
     });
 
-    leftThumbContainer.onPointerUpObservable.add(() => {
-        xAddPos = 0;
-        yAddPos = 0;
+    document.addEventListener('pointerup', () => {
         leftPuck.isDown = false;
-        leftPuck.isVisible = false;
+        leftPuck.left = 0;
+        leftPuck.top = 0;
         leftThumbContainer.alpha = 0.4;
     });
 
+    document.addEventListener('pointerdown', e => {
+        const xAddPos = (canvas.width - -sideJoystickOffset - bigR) - e.offsetX;
+        const yAddPos = (canvas.height - -bottomJoystickOffset - bigR) - e.offsetY;
+        const distanceToPoint = Math.hypot(yAddPos, xAddPos);
 
-    leftThumbContainer.onPointerMoveObservable.add(coordinates => {
-        if (leftPuck.isDown) {
-            xAddPos = coordinates.x - (leftThumbContainer._currentMeasure.width * .5) - sideJoystickOffset;
-            yAddPos = adt._canvas.height - coordinates.y - (leftThumbContainer._currentMeasure.height * .5) + bottomJoystickOffset;
-            leftPuck.floatLeft = xAddPos;
-            leftPuck.floatTop = yAddPos * -1;
-            leftPuck.left = leftPuck.floatLeft;
-            leftPuck.top = leftPuck.floatTop;
+        if (distanceToPoint <= bigR) {
+            leftPuck.isDown = true;
+            leftThumbContainer.alpha = 0.9;
         }
     });
 
     adt.addControl(leftThumbContainer);
-    leftThumbContainer.addControl(leftInnerThumbContainer);
     leftThumbContainer.addControl(leftPuck);
-    leftPuck.isVisible = false;
 
     return {
         getX() {
-            return xAddPos;
+            return parseInt(leftPuck.left);
         },
 
         getY() {
-            return yAddPos;
+            return parseInt(leftPuck.top);
+        },
+
+        getMaxDistance() {
+            return bigR - smallR;
         }
     }
 };

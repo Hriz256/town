@@ -32,7 +32,7 @@ const materials = {
     createVideo({videoURL, imgURL}) {
         const mat = new BABYLON.StandardMaterial(videoURL, this.scene);
         const videoTexture = new BABYLON.VideoTexture(videoURL, [`${this.baseUrl}${videoURL}`], this.scene, true, false, BABYLON.VideoTexture.TRILINEAR_SAMPLINGMODE, {
-            poster: imgURL,
+            poster: `${this.baseUrl}${imgURL}`,
             autoUpdateTexture: true
         });
         mat.diffuseTexture = videoTexture;
