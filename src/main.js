@@ -5,7 +5,7 @@ import {createPlayground, createGround} from "./playground/playground";
 
 const load = scene => {
     const assetsManager = new BABYLON.AssetsManager(scene);
-    assetsManager.addMeshTask("car task", "", "assets/", "bus.glb");
+    assetsManager.addMeshTask("car task", "", "assets/", "bus.gltf");
 
     assetsManager.load();
 

@@ -14,22 +14,12 @@ const car = {
     vehicleSteering: 0,
     breakingForce: 0,
     chassisMesh: null,
-    front_left: 0,
-    front_right: 1,
-    back_left: 2,
-    back_right: 3
 };
 
 const chassisWidth = 1.8;
 const chassisHeight = 1;
 const chassisLength = 5.3;
 const massVehicle = 400;
-
-const wheelRadiusBack = .5;
-const wheelAxisHeightBack = 0.5;
-
-const wheelRadiusFront = .5;
-const wheelAxisHeightFront = 0.5;
 
 const suspensionStiffness = 30; // насколько сильно машина будет проседать при разгоне и торможении
 const suspensionDamping = 0.3;
@@ -38,6 +28,13 @@ const suspensionRestLength = 0.6;
 const rollInfluence = 0.0;
 
 const isMobile = false;
+
+const wheelsNumber = {
+    front_left: 0,
+    front_right: 1,
+    rear_left: 2,
+    rear_right: 3
+};
 
 const actions = {
     accelerate: false,
@@ -131,76 +128,74 @@ const update = (scene, joystick) => {
     };
 
 
-    if (car.vehicleReady) {
-        scene.registerBeforeRender(() => {
-            billboardsArray.filter(i => i.frame).forEach(item => {
-                if (car.chassisMesh.intersectsMesh(item.frame, false) && !item.isVideoShow &&
-                    (car.chassisMesh.position.x && car.chassisMesh.position.z)) {
-                    item.showVideo();
-                }
+    scene.registerBeforeRender(() => {
+        // billboardsArray.filter(i => i.frame).forEach(item => {
+        //     if (car.chassisMesh.intersectsMesh(item.frame, false) && !item.isVideoShow &&
+        //         (car.chassisMesh.position.x && car.chassisMesh.position.z)) {
+        //         item.showVideo();
+        //     }
+        //
+        //     if (!car.chassisMesh.intersectsMesh(item.frame, false) && item.isVideoShow) {
+        //         item.hideVideo();
+        //     }
+        // });
+        //
+        // Array.from(billboardsArray, item => {
+        //     if (car.chassisMesh.intersectsMesh(item.physicsZone, false) && !item.isChangeMass &&
+        //         (car.chassisMesh.position.x && car.chassisMesh.position.z)) {
+        //         item.setPositiveMass();
+        //         item.recreate();
+        //     }
+        // });
+        //
+        // Array.from(iconsFrame, icon => {
+        //     if (car.chassisMesh.intersectsMesh(icon.frame, false) && !icon.isPictureChange &&
+        //         (car.chassisMesh.position.x && car.chassisMesh.position.z)) {
+        //         icon.showEnter();
+        //     }
+        //
+        //     if (!car.chassisMesh.intersectsMesh(icon.frame, false) && icon.isPictureChange &&
+        //         (car.chassisMesh.position.x && car.chassisMesh.position.z)) {
+        //         icon.showEnter();
+        //     }
+        // });
 
-                if (!car.chassisMesh.intersectsMesh(item.frame, false) && item.isVideoShow) {
-                    item.hideVideo();
-                }
-            });
+        const speed = car.vehicle.getCurrentSpeedKmHour();
+        car.breakingForce = 0;
+        car.engineForce = 0;
 
-            Array.from(billboardsArray, item => {
-                if (car.chassisMesh.intersectsMesh(item.physicsZone, false) && !item.isChangeMass &&
-                    (car.chassisMesh.position.x && car.chassisMesh.position.z)) {
-                    item.setPositiveMass();
-                    item.recreate();
-                }
-            });
+        isMobile ? mobileControl(joystick, speed) : pcControl(speed);
 
-            Array.from(iconsFrame, icon => {
-                if (car.chassisMesh.intersectsMesh(icon.frame, false) && !icon.isPictureChange &&
-                    (car.chassisMesh.position.x && car.chassisMesh.position.z)) {
-                    icon.showEnter();
-                }
+        car.vehicle.applyEngineForce(car.engineForce, wheelsNumber.front_left);
+        car.vehicle.applyEngineForce(car.engineForce, wheelsNumber.rear_left);
 
-                if (!car.chassisMesh.intersectsMesh(icon.frame, false) && icon.isPictureChange &&
-                    (car.chassisMesh.position.x && car.chassisMesh.position.z)) {
-                    icon.showEnter();
-                }
-            });
+        car.vehicle.setBrake(car.breakingForce / 2, wheelsNumber.front_left);
+        car.vehicle.setBrake(car.breakingForce / 2, wheelsNumber.front_right);
+        car.vehicle.setBrake(car.breakingForce, wheelsNumber.rear_left);
+        car.vehicle.setBrake(car.breakingForce, wheelsNumber.rear_right);
 
-            const speed = car.vehicle.getCurrentSpeedKmHour();
-            car.breakingForce = 0;
-            car.engineForce = 0;
-
-            isMobile ? mobileControl(joystick, speed) : pcControl(speed);
-
-            car.vehicle.applyEngineForce(car.engineForce, car.front_left);
-            car.vehicle.applyEngineForce(car.engineForce, car.back_left);
-
-            car.vehicle.setBrake(car.breakingForce / 2, car.front_left);
-            car.vehicle.setBrake(car.breakingForce / 2, car.front_right);
-            car.vehicle.setBrake(car.breakingForce, car.back_left);
-            car.vehicle.setBrake(car.breakingForce, car.back_right);
-
-            car.vehicle.setSteeringValue(car.vehicleSteering, car.front_left);
-            car.vehicle.setSteeringValue(car.vehicleSteering, car.back_left);
+        car.vehicle.setSteeringValue(car.vehicleSteering, wheelsNumber.front_left);
+        car.vehicle.setSteeringValue(car.vehicleSteering, wheelsNumber.rear_left);
 
 
-            let tm, p, q;
+        let tm, p, q;
 
-            Array.from({length: car.vehicle.getNumWheels()}, (i, index) => {
-                car.vehicle.updateWheelTransform(index, true);
-                tm = car.vehicle.getWheelTransformWS(index);
-                p = tm.getOrigin();
-                q = tm.getRotation();
-                car.wheelMeshes[index].position.set(p.x(), p.y(), p.z());
-                car.wheelMeshes[index].rotationQuaternion.set(q.x(), q.y(), q.z(), q.w());
-                car.wheelMeshes[index].rotate(BABYLON.Axis.Z, Math.PI / 2);
-            });
-
-            tm = car.vehicle.getChassisWorldTransform();
+        Array.from({length: car.vehicle.getNumWheels()}, (i, index) => {
+            car.vehicle.updateWheelTransform(index, true);
+            tm = car.vehicle.getWheelTransformWS(index);
             p = tm.getOrigin();
             q = tm.getRotation();
-            car.chassisMesh.position.set(p.x(), p.y(), p.z());
-            car.chassisMesh.rotationQuaternion.set(q.x(), q.y(), q.z(), q.w());
-        })
-    }
+            car.wheelMeshes[index].position.set(p.x(), p.y(), p.z());
+            car.wheelMeshes[index].rotationQuaternion.set(q.x(), q.y(), q.z(), q.w());
+            car.wheelMeshes[index].rotate(BABYLON.Axis.Z, Math.PI / 2);
+        });
+
+        tm = car.vehicle.getChassisWorldTransform();
+        p = tm.getOrigin();
+        q = tm.getRotation();
+        car.chassisMesh.position.set(p.x(), p.y(), p.z());
+        car.chassisMesh.rotationQuaternion.set(q.x(), q.y(), q.z(), q.w());
+    })
 };
 
 
@@ -280,22 +275,24 @@ function createVehicle(scene, camera, {carTask, wheelTask}) {
     createCarBody(scene);
 
     Array.from(scene.getMeshByName('__root__').getChildren(), item => {
+        const {x, y, z} = item.position;
+
         switch (item.name) {
-            case 'Front_wheel':
+            case 'Front_wheel_left':
                 item.parent = null;
-                addWheel(true, new Ammo.btVector3(item.position.z, wheelAxisHeightFront, item.position.x), wheelRadiusFront, item, car.front_left);
+                addWheel(true, new Ammo.btVector3(z, y, x), y, item, wheelsNumber.front_left);
                 break;
-            case 'Front_wheel.001':
+            case 'Front_wheel_right':
                 item.parent = null;
-                addWheel(false, new Ammo.btVector3(item.position.z, wheelAxisHeightFront, item.position.x), wheelRadiusFront, item, car.back_left);
+                addWheel(true, new Ammo.btVector3(z, y, x), y, item, wheelsNumber.front_right);
                 break;
-            case 'Rear_wheel':
+            case 'Rear_wheel_left':
                 item.parent = null;
-                addWheel(true, new Ammo.btVector3(item.position.z, wheelAxisHeightBack, item.position.x), wheelRadiusBack, item, car.front_right);
+                addWheel(false, new Ammo.btVector3(z, y, x), y, item, wheelsNumber.rear_left);
                 break;
-            case 'Rear_wheel.001':
+            case 'Rear_wheel_right':
                 item.parent = null;
-                addWheel(false, new Ammo.btVector3(item.position.z, wheelAxisHeightBack, item.position.x), wheelRadiusBack, item, car.back_right);
+                addWheel(false, new Ammo.btVector3(z, y, x), y, item, wheelsNumber.rear_right);
                 break;
             default:
                 break;
