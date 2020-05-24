@@ -1,3 +1,10 @@
+const colors = {
+    'peach': '#ffe5b4',
+    'green': '#1C5030',
+    'white': '#ffffff',
+    'lightColor': '#feff7f'
+};
+
 const materials = {
     scene: null,
     baseUrl: 'assets/',
@@ -5,7 +12,7 @@ const materials = {
     createColor(color, hex) {
         this[color] = new BABYLON.StandardMaterial(`${color}`, this.scene);
         this[color].diffuseColor = new BABYLON.Color3.FromHexString(hex);
-        this[color].emissiveColor = new BABYLON.Color3.FromHexString(hex);
+        // this[color].emissiveColor = new BABYLON.Color3.FromHexString(hex);
 
         return this[color];
     },
@@ -38,6 +45,10 @@ const materials = {
         mat.diffuseTexture = videoTexture;
 
         return {mat, videoTexture};
+    },
+
+    setColors() {
+        Array.from(Object.entries(colors), color => this.createColor(color[0], color[1]));
     }
 };
 
@@ -69,8 +80,8 @@ const mesh = {
         return box;
     },
 
-    createGround({width, height, ...generalParams}) {
-        const ground = BABYLON.MeshBuilder.CreateGround('ground', {width, height, subdivisions: 25}, this.scene);
+    createGround({width, height, subdivisions = 25, ...generalParams}) {
+        const ground = BABYLON.MeshBuilder.CreateGround('ground', {width, height, subdivisions}, this.scene);
         this._generalParams(ground, generalParams);
 
         return ground;

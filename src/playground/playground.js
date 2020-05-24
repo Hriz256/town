@@ -43,18 +43,18 @@ const createStreetLamp = ({x, z, scene, title}) => {
     })
 };
 
-const createGround = (scene) => {
-    const ground = BABYLON.Mesh.CreateGround("ground", 200, 200, 2, scene);
-    materials.createTexture('grass');
-    materials['grass'].diffuseTexture.uScale = 400.0;
-    materials['grass'].diffuseTexture.vScale = 400.0;
-    materials['grass'].maxSimultaneousLights = 32;
-    materials['grass'].specularColor = new BABYLON.Color3(.1, .1, .1);
+const createGround = () => {
+    const ground = mesh.createGround({
+        width: 100,
+        height: 100,
+        subdivisions: 2,
+        position: {x: 0, y: 0, z: 0},
+        material: materials['peach']
+    });
+    // materials['grass'].maxSimultaneousLights = 32;
+    // materials['grass'].specularColor = new BABYLON.Color3(.1, .1, .1);
 
-    ground.material = materials['grass'];
-
-    ground.setPhysics = mesh.setPhysics;
-    ground.setPhysics({})
+    ground.setPhysics({});
 };
 
 const createBench = (scene) => {
@@ -116,7 +116,6 @@ let billboardsArray;
 let iconsFrame = [];
 
 const createPlayground = scene => {
-    createGround(scene);
     createFlagsOnBalloons(scene);
     iconsFrame = createIcons(scene);
 
@@ -156,5 +155,4 @@ const createPlayground = scene => {
     // createBench()
 };
 
-export {createPlayground};
-export {billboardsArray, iconsFrame};
+export {billboardsArray, iconsFrame, createPlayground, createGround};

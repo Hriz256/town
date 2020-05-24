@@ -2,6 +2,7 @@ import * as BABYLON from 'babylonjs';
 import 'babylonjs-loaders';
 import './index.css';
 import './preloader';
+// import
 import {main} from "./main";
 
 const canvas = document.getElementById("renderCanvas");
