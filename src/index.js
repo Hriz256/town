@@ -19,7 +19,7 @@ const createScene = function () {
 
 
     const camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2.8, 30, new BABYLON.Vector3(0, 0, 0), scene);
-    camera.attachControl(canvas, true);
+    // camera.attachControl(canvas, true);
 
     scene.enablePhysics(new BABYLON.Vector3(0, -10, 0), new BABYLON.AmmoJSPlugin());
 
@@ -30,7 +30,7 @@ const createScene = function () {
     //
     // plugin.setMaxSteps(10);
 
-    main({scene, camera});
+    main({scene, camera, canvas});
 
     return scene;
 };

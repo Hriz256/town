@@ -1,6 +1,6 @@
-import {materials, mesh} from "./playground/materials";
-import {billboardsArray, iconsFrame} from "./playground/playground";
-import {createJoystick} from "./joystick";
+import {materials, mesh} from "../playground/materials";
+import {billboardsArray, iconsFrame} from "../playground/playground";
+import {createJoystick} from "../joystick";
 
 const car = {
     vehicle: null,
@@ -16,9 +16,22 @@ const car = {
     chassisMesh: null,
 };
 
-const chassisWidth = 1.8;
-const chassisHeight = 1;
-const chassisLength = 5.3;
+const vehicles = {
+    golf: {
+        position: {
+            x: 0,
+            y: -0.5,
+            z: -0.1
+        },
+        size: {
+            width: 1.85,
+            height: 1,
+            depth: 4.4
+        },
+        wheelRotation: Math.PI / 2,
+    }
+};
+
 const massVehicle = 400;
 
 const suspensionStiffness = 30; // насколько сильно машина будет проседать при разгоне и торможении
@@ -201,15 +214,16 @@ const update = (scene, joystick) => {
 
 const createCarBody = (scene) => {
     car.chassisMesh = mesh.createBox({
-        size: {x: chassisWidth, y: chassisHeight, z: chassisLength},
+        size: {x: vehicles.golf.size.width, y: vehicles.golf.size.height, z: vehicles.golf.size.depth},
         position: {x: 0, y: 0, z: 0},
         material: materials['green']
     });
     car.chassisMesh.rotationQuaternion = new BABYLON.Quaternion();
-    // car.chassisMesh.isVisible = false;
+    car.chassisMesh.isVisible = false;
 
     scene.getMeshByName('__root__').rotationQuaternion = null;
     scene.getMeshByName('__root__').rotation.set(0, Math.PI / -2, 0);
+    scene.getMeshByName('__root__').position = vehicles.golf.position;
     scene.getMeshByName('__root__').parent = car.chassisMesh;
 };
 
@@ -221,7 +235,7 @@ function createVehicle(scene, camera, {carTask, wheelTask}) {
     const physicsWorld = scene.getPhysicsEngine().getPhysicsPlugin().world;
     const localInertia = new Ammo.btVector3(0, 0, 0);
 
-    const geometry = new Ammo.btBoxShape(new Ammo.btVector3(chassisWidth * .5, chassisHeight * .5, chassisLength * .5));
+    const geometry = new Ammo.btBoxShape(new Ammo.btVector3(vehicles.golf.size.width * .5, vehicles.golf.size.height * .5, vehicles.golf.size.depth * .5));
     geometry.calculateLocalInertia(massVehicle, localInertia);
 
     const transform = new Ammo.btTransform();
@@ -280,18 +294,22 @@ function createVehicle(scene, camera, {carTask, wheelTask}) {
         switch (item.name) {
             case 'Front_wheel_left':
                 item.parent = null;
+                Array.from(item.getChildren(), item => item.rotation.x = Math.PI / 2);
                 addWheel(true, new Ammo.btVector3(z, y, x), y, item, wheelsNumber.front_left);
                 break;
             case 'Front_wheel_right':
                 item.parent = null;
+                Array.from(item.getChildren(), item => item.rotation.x = Math.PI / 2);
                 addWheel(true, new Ammo.btVector3(z, y, x), y, item, wheelsNumber.front_right);
                 break;
             case 'Rear_wheel_left':
                 item.parent = null;
+                Array.from(item.getChildren(), item => item.rotation.x = Math.PI / 2);
                 addWheel(false, new Ammo.btVector3(z, y, x), y, item, wheelsNumber.rear_left);
                 break;
             case 'Rear_wheel_right':
                 item.parent = null;
+                Array.from(item.getChildren(), item => item.rotation.x = Math.PI / 2);
                 addWheel(false, new Ammo.btVector3(z, y, x), y, item, wheelsNumber.rear_right);
                 break;
             default:

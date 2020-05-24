@@ -45,8 +45,8 @@ const createStreetLamp = ({x, z, scene, title}) => {
 
 const createGround = () => {
     const ground = mesh.createGround({
-        width: 100,
-        height: 100,
+        width: 500,
+        height: 500,
         subdivisions: 2,
         position: {x: 0, y: 0, z: 0},
         material: materials['peach']

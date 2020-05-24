@@ -1,11 +1,15 @@
 import {iconsFrame} from "./playground/playground";
-import {createVehicle} from "./car";
+import {createVehicle} from "./cars/car";
 import {materials, mesh} from "./playground/materials";
 import {createPlayground, createGround} from "./playground/playground";
+import {createGarageCars} from './cars/garage';
 
 const load = scene => {
     const assetsManager = new BABYLON.AssetsManager(scene);
-    assetsManager.addMeshTask("car task", "", "assets/", "bus.gltf");
+    assetsManager.addMeshTask('golf task', '', 'assets/', 'golf.gltf');
+    assetsManager.addMeshTask('car task', '', 'assets/', 'car.gltf');
+    assetsManager.addMeshTask('VW task', '', 'assets/', 'VW.gltf');
+    assetsManager.addMeshTask("bus task", "", "assets/", "bus.gltf");
 
     assetsManager.load();
 
@@ -14,7 +18,7 @@ const load = scene => {
     });
 };
 
-const main = async ({scene, camera}) => {
+const main = async ({scene, camera, canvas}) => {
     const tasks = await load(scene);
 
     mesh.scene = scene;
@@ -27,7 +31,8 @@ const main = async ({scene, camera}) => {
 
     // createPlayground(scene); // Создаём площадку со всеми объектами
     createGround();
-    createVehicle(scene, camera, {carTask: tasks[0]}); // Создаём машинку
+    createGarageCars(tasks, scene, canvas);
+    // createVehicle(scene, camera, {golf: tasks[0], car: tasks[1], VW: tasks[2]}); // Создаём машинку
 };
 
 

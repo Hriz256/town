@@ -2,12 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="494f19c3-024e-4c79-9be4-54ffcb83f6a5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/cars/carsData.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/cars/garage.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/playground/interface.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/bus.glb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/golfCar.gltf" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/golfCar.gltf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/assets/grass.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/car.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/car.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/golfCar.gltf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/car.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/cars/car.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/garage.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/playground/playground.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/playground/playground.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -39,6 +43,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\town\src\cars" />
       <recent name="D:\town\src\playground" />
       <recent name="D:\town\src\billboardsEnvironment" />
     </key>
@@ -98,7 +103,7 @@
       <workItem from="1589482933310" duration="4534000" />
       <workItem from="1589557514778" duration="42428000" />
       <workItem from="1589719624775" duration="13734000" />
-      <workItem from="1590175284541" duration="37677000" />
+      <workItem from="1590175284541" duration="53861000" />
     </task>
     <servers />
   </component>
