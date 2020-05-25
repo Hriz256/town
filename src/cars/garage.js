@@ -2,9 +2,6 @@ import * as GUI from 'babylonjs-gui';
 import {mesh} from "../playground/materials";
 import {interfaces} from '../playground/interface';
 
-let currentVehicleNumber = 0;
-let currentVehicle = null;
-
 const createInterface = () => {
     const advancedTexture = new GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI');
 
@@ -24,6 +21,8 @@ const createInterface = () => {
         left: '50px',
         hAl: 'HORIZONTAL_ALIGNMENT_LEFT'
     });
+    toggleLeft.alpha = 0.6;
+    toggleLeft.isEnabled = false;
 
     const toggleRight = interfaces.createImgButton({
         url: 'assets/next.png',
@@ -34,16 +33,40 @@ const createInterface = () => {
         hAl: 'HORIZONTAL_ALIGNMENT_RIGHT'
     });
 
-
     Array.from([title, toggleLeft, toggleRight], item => advancedTexture.addControl(item));
+
+    return {
+        getLeftBtn() {
+            return toggleLeft;
+        },
+
+        getRightBtn() {
+            return toggleRight;
+        },
+
+        removeItems() {
+            Array.from([title, toggleLeft, toggleRight], item => advancedTexture.removeControl(item));
+        },
+
+        enableLeftBtn(allow) {
+            toggleLeft.isEnabled = !!allow;
+            toggleLeft.alpha = allow ? 1 : 0.6;
+        },
+
+        enableRightBtn(allow) {
+            toggleRight.isEnabled = !!allow;
+            toggleRight.alpha = allow ? 1 : 0.6;
+        }
+    }
 };
 
-const rotateVehicleByPointer = (scene, canvas) => {
+const rotateVehicleByPointer = (scene, canvas, mesh) => {
     const currentPosition = {x: 0, y: 0};
     const currentRotation = {x: 0, y: 0};
     const lastAngleDiff = {x: 0, y: 0};
     const oldAngle = {x: 0, y: 0};
     const newAngle = {x: 0, y: 0};
+    let vehicle = mesh;
     let clicked = false;
     let mousemove = false;
     let frameCount = 0;
@@ -56,12 +79,12 @@ const rotateVehicleByPointer = (scene, canvas) => {
             lastAngleDiff.x = lastAngleDiff.x / 1.1;
             lastAngleDiff.y = lastAngleDiff.y / 1.1;
 
-            currentVehicle.rotation.x += lastAngleDiff.x;
-            currentVehicle.rotation.y += lastAngleDiff.y;
+            vehicle.rotation.x += lastAngleDiff.x;
+            vehicle.rotation.y += lastAngleDiff.y;
 
             frameCount++;
-            currentRotation.x = currentVehicle.rotation.x;
-            currentRotation.y = currentVehicle.rotation.y;
+            currentRotation.x = vehicle.rotation.x;
+            currentRotation.y = vehicle.rotation.y;
         } else if (frameCount >= maxFrameCount) {
             frameCount = 0;
         }
@@ -70,8 +93,8 @@ const rotateVehicleByPointer = (scene, canvas) => {
     canvas.addEventListener('pointerdown', evt => {
         currentPosition.x = evt.clientX;
         currentPosition.y = evt.clientY;
-        currentRotation.x = currentVehicle.rotation.x;
-        currentRotation.y = currentVehicle.rotation.y;
+        currentRotation.x = vehicle.rotation.x;
+        currentRotation.y = vehicle.rotation.y;
         clicked = true;
     });
 
@@ -84,13 +107,13 @@ const rotateVehicleByPointer = (scene, canvas) => {
             return;
         }
 
-        oldAngle.x = currentVehicle.rotation.x;
-        oldAngle.y = currentVehicle.rotation.y;
+        oldAngle.x = vehicle.rotation.x;
+        oldAngle.y = vehicle.rotation.y;
 
-        currentVehicle.rotation.y -= (evt.clientX - currentPosition.x) / 300.0;
+        vehicle.rotation.y -= (evt.clientX - currentPosition.x) / 300.0;
 
-        newAngle.x = currentVehicle.rotation.x;
-        newAngle.y = currentVehicle.rotation.y;
+        newAngle.x = vehicle.rotation.x;
+        newAngle.y = vehicle.rotation.y;
 
         lastAngleDiff.x = newAngle.x - oldAngle.x;
         lastAngleDiff.y = newAngle.y - oldAngle.y;
@@ -99,12 +122,18 @@ const rotateVehicleByPointer = (scene, canvas) => {
     });
 
     canvas.addEventListener('pointerup', () => clicked = false);
+
+    return {
+        changeVehicle(mesh) {
+            vehicle = mesh;
+        }
+    }
 };
 
-const createModel = (task, index) => {
+const createModel = (task, index, step) => {
     const carBody = mesh.createBox({
         size: {x: 5, y: 1, z: 5},
-        position: {x: !index ? index : 1000, y: 0, z: 0},
+        position: {x: -index * step, y: 0, z: 0},
     });
     // carBody.isVisible = false;
 
@@ -115,12 +144,57 @@ const createModel = (task, index) => {
     return carBody;
 };
 
-const createGarageCars = (tasks, scene, canvas) => {
-    const vehicles = Array.from(tasks, (task, index) => createModel(task, index));
-    currentVehicle = vehicles[0];
+const run = (scene, vehicle, isLeft, step) => {
+    const frame = 60;
+    const xSlide = new BABYLON.Animation('xSlide', 'position.x', frame, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_RELATIVE);
 
-    rotateVehicleByPointer(scene, canvas);
-    createInterface();
+    const keyFramesP = [
+        {
+            frame: 0,
+            value: vehicle.position.x
+        },
+        {
+            frame,
+            value: isLeft ? vehicle.position.x - step : vehicle.position.x + step
+        }
+    ];
+
+    xSlide.setKeys(keyFramesP);
+    vehicle.animations.push(xSlide);
+    scene.beginAnimation(vehicle, 0, frame, false);
+};
+
+const shiftAllVehicles = (scene, vehicles, isLeft, step) => {
+    Array.from(vehicles, vehicle => run(scene, vehicle, isLeft, step));
+};
+
+const createGarageCars = (tasks, scene, canvas) => {
+    const step = 60;
+    const vehicles = Array.from(tasks, (task, index) => createModel(task, index, step));
+    let currentVehicleNumber = 0;
+
+    const rotate = rotateVehicleByPointer(scene, canvas, vehicles[currentVehicleNumber]);
+    const interfaceWindow = createInterface(vehicles);
+
+    interfaceWindow.getLeftBtn().onPointerUpObservable.add(() => {
+        if (currentVehicleNumber > 0) {
+            interfaceWindow.enableRightBtn(true);
+            rotate.changeVehicle(vehicles[--currentVehicleNumber]);
+            shiftAllVehicles(scene, vehicles, true, step);
+        }
+
+        !currentVehicleNumber && interfaceWindow.enableLeftBtn(false);
+    });
+
+    interfaceWindow.getRightBtn().onPointerUpObservable.add(() => {
+        if (currentVehicleNumber < vehicles.length - 1) {
+            interfaceWindow.enableLeftBtn(true);
+            rotate.changeVehicle(vehicles[++currentVehicleNumber]);
+            shiftAllVehicles(scene, vehicles, false, step);
+        }
+
+        currentVehicleNumber === vehicles.length - 1 && interfaceWindow.enableRightBtn(false);
+    });
 };
 
 export {createGarageCars};
