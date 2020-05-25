@@ -6,11 +6,11 @@ import {createGarageCars} from './cars/garage';
 
 const load = scene => {
     const assetsManager = new BABYLON.AssetsManager(scene);
-    assetsManager.addMeshTask('golf task', '', 'assets/', 'golf.gltf');
-    assetsManager.addMeshTask('car task', '', 'assets/', 'car.gltf');
-    assetsManager.addMeshTask('VW task', '', 'assets/', 'VW.gltf');
-    assetsManager.addMeshTask('bus task', '', 'assets/', "bus.gltf");
-    assetsManager.addMeshTask('island task', '', 'assets/', "island.gltf");
+    assetsManager.addMeshTask('golf', '', 'assets/', 'golf.gltf');
+    assetsManager.addMeshTask('car', '', 'assets/', 'car.gltf');
+    assetsManager.addMeshTask('VW', '', 'assets/', 'VW.gltf');
+    assetsManager.addMeshTask('bus', '', 'assets/', "bus.gltf");
+    assetsManager.addMeshTask('island', '', 'assets/', "island.gltf");
 
     assetsManager.load();
 
@@ -31,7 +31,6 @@ const main = async ({scene, camera, canvas}) => {
     materials.setColors();
 
     // createPlayground(scene); // Создаём площадку со всеми объектами
-    createGround();
     createGarageCars(tasks, scene, canvas);
     // createVehicle(scene, camera, {golf: tasks[0], car: tasks[1], VW: tasks[2]}); // Создаём машинку
 };

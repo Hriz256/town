@@ -1,6 +1,7 @@
 import * as GUI from 'babylonjs-gui';
 import {mesh} from "../playground/materials";
 import {interfaces} from '../playground/interface';
+import {vehicles} from "./carsData";
 
 const createInterface = () => {
     const advancedTexture = new GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI');
@@ -14,7 +15,7 @@ const createInterface = () => {
     });
 
     const toggleLeft = interfaces.createImgButton({
-        url: 'assets/next.png',
+        url: 'assets/previous.png',
         thickness: 0,
         width: '100px',
         height: '100px',
@@ -118,25 +119,37 @@ const rotateVehicleByPointer = (scene, canvas, mesh) => {
 
     canvas.addEventListener('pointerup', () => clicked = false);
 
-    return {
-        changeVehicle(mesh) {
-            vehicle = mesh;
-        }
-    }
+    return (mesh) => vehicle = mesh;
 };
 
-const createModel = (task, index, step) => {
+const createModel = (task, getIslandInstance, index, step) => {
     const carBody = mesh.createBox({
-        size: {x: 5, y: 1, z: 5},
+        size: {x: 1, y: 1, z: 1},
         position: {x: -index * step, y: 0, z: 0},
     });
-    // carBody.isVisible = false;
+    carBody.isVisible = false;
+
+    const {x, y, z} = vehicles[task.name].islandPosition;
 
     task.loadedMeshes[0].rotationQuaternion = null;
+    task.loadedMeshes[0].position.set(x, y, z);
     task.loadedMeshes[0].rotation.set(0, Math.PI / -2, 0);
     task.loadedMeshes[0].parent = carBody;
 
+    getIslandInstance().parent = carBody;
+
     return carBody;
+};
+
+const createIsland = (islandNode) => {
+    islandNode.getChildren()[0].isVisible = false;
+
+    return () => {
+        const island = islandNode.clone('newIsland');
+        island.getChildren()[0].isVisible = true;
+
+        return island;
+    };
 };
 
 const run = (scene, vehicle, isLeft, step) => {
@@ -165,16 +178,17 @@ const shiftAllVehicles = (scene, vehicles, isLeft, step) => {
 
 const createGarageCars = (tasks, scene, canvas) => {
     const step = 60;
-    const vehicles = Array.from(tasks, (task, index) => createModel(task, index, step));
+    const getIslandInstance = createIsland(tasks[4].loadedMeshes[0]);
+    const vehicles = Array.from(tasks.slice(0, -1), (task, index) => createModel(task, getIslandInstance, index, step));
     let currentVehicleNumber = 0;
 
-    const rotate = rotateVehicleByPointer(scene, canvas, vehicles[currentVehicleNumber]);
+    const changeVehicle = rotateVehicleByPointer(scene, canvas, vehicles[currentVehicleNumber]);
     const interfaceWindow = createInterface(vehicles);
 
     interfaceWindow.getLeftBtn().onPointerUpObservable.add(function () {
         if (currentVehicleNumber > 0) {
             interfaceWindow.enableBtn(interfaceWindow.getRightBtn(), true);
-            rotate.changeVehicle(vehicles[--currentVehicleNumber]);
+            changeVehicle(vehicles[--currentVehicleNumber]);
             shiftAllVehicles(scene, vehicles, true, step);
         }
 
@@ -184,7 +198,7 @@ const createGarageCars = (tasks, scene, canvas) => {
     interfaceWindow.getRightBtn().onPointerUpObservable.add(function () {
         if (currentVehicleNumber < vehicles.length - 1) {
             interfaceWindow.enableBtn(interfaceWindow.getLeftBtn(), true);
-            rotate.changeVehicle(vehicles[++currentVehicleNumber]);
+            changeVehicle(vehicles[++currentVehicleNumber]);
             shiftAllVehicles(scene, vehicles, false, step);
         }
 

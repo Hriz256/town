@@ -116,6 +116,7 @@ let billboardsArray;
 let iconsFrame = [];
 
 const createPlayground = scene => {
+    createGround();
     createFlagsOnBalloons(scene);
     iconsFrame = createIcons(scene);
 
@@ -155,4 +156,4 @@ const createPlayground = scene => {
     // createBench()
 };
 
-export {billboardsArray, iconsFrame, createPlayground, createGround};
+export {billboardsArray, iconsFrame, createPlayground};
