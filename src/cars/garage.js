@@ -48,15 +48,10 @@ const createInterface = () => {
             Array.from([title, toggleLeft, toggleRight], item => advancedTexture.removeControl(item));
         },
 
-        enableLeftBtn(allow) {
-            toggleLeft.isEnabled = !!allow;
-            toggleLeft.alpha = allow ? 1 : 0.6;
+        enableBtn(btn, allow) {
+            btn.isEnabled = !!allow;
+            btn.alpha = allow ? 1 : 0.6;
         },
-
-        enableRightBtn(allow) {
-            toggleRight.isEnabled = !!allow;
-            toggleRight.alpha = allow ? 1 : 0.6;
-        }
     }
 };
 
@@ -176,24 +171,24 @@ const createGarageCars = (tasks, scene, canvas) => {
     const rotate = rotateVehicleByPointer(scene, canvas, vehicles[currentVehicleNumber]);
     const interfaceWindow = createInterface(vehicles);
 
-    interfaceWindow.getLeftBtn().onPointerUpObservable.add(() => {
+    interfaceWindow.getLeftBtn().onPointerUpObservable.add(function () {
         if (currentVehicleNumber > 0) {
-            interfaceWindow.enableRightBtn(true);
+            interfaceWindow.enableBtn(interfaceWindow.getRightBtn(), true);
             rotate.changeVehicle(vehicles[--currentVehicleNumber]);
             shiftAllVehicles(scene, vehicles, true, step);
         }
 
-        !currentVehicleNumber && interfaceWindow.enableLeftBtn(false);
+        !currentVehicleNumber && interfaceWindow.enableBtn(this, false);
     });
 
-    interfaceWindow.getRightBtn().onPointerUpObservable.add(() => {
+    interfaceWindow.getRightBtn().onPointerUpObservable.add(function () {
         if (currentVehicleNumber < vehicles.length - 1) {
-            interfaceWindow.enableLeftBtn(true);
+            interfaceWindow.enableBtn(interfaceWindow.getLeftBtn(), true);
             rotate.changeVehicle(vehicles[++currentVehicleNumber]);
             shiftAllVehicles(scene, vehicles, false, step);
         }
 
-        currentVehicleNumber === vehicles.length - 1 && interfaceWindow.enableRightBtn(false);
+        currentVehicleNumber === vehicles.length - 1 && interfaceWindow.enableBtn(this, false);
     });
 };
 
