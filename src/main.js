@@ -9,7 +9,8 @@ const load = scene => {
     assetsManager.addMeshTask('golf task', '', 'assets/', 'golf.gltf');
     assetsManager.addMeshTask('car task', '', 'assets/', 'car.gltf');
     assetsManager.addMeshTask('VW task', '', 'assets/', 'VW.gltf');
-    assetsManager.addMeshTask("bus task", "", "assets/", "bus.gltf");
+    assetsManager.addMeshTask('bus task', '', 'assets/', "bus.gltf");
+    assetsManager.addMeshTask('island task', '', 'assets/', "island.gltf");
 
     assetsManager.load();
 
