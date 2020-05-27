@@ -22,8 +22,6 @@ const createInterface = () => {
         left: '50px',
         hAl: 'HORIZONTAL_ALIGNMENT_LEFT'
     });
-    toggleLeft.alpha = 0.6;
-    toggleLeft.isEnabled = false;
 
     const toggleRight = interfaces.createImgButton({
         url: 'assets/next.png',
@@ -34,7 +32,7 @@ const createInterface = () => {
         hAl: 'HORIZONTAL_ALIGNMENT_RIGHT'
     });
 
-    Array.from([title, toggleLeft, toggleRight], item => advancedTexture.addControl(item));
+    Array.from([title, toggleRight], item => advancedTexture.addControl(item));
 
     return {
         getLeftBtn() {
@@ -50,8 +48,8 @@ const createInterface = () => {
         },
 
         enableBtn(btn, allow) {
-            btn.isEnabled = !!allow;
-            btn.alpha = allow ? 1 : 0.6;
+            console.log(btn, allow)
+            allow ? advancedTexture.addControl(btn) : advancedTexture.removeControl(btn);
         },
     }
 };
@@ -119,7 +117,10 @@ const rotateVehicleByPointer = (scene, canvas, mesh) => {
 
     canvas.addEventListener('pointerup', () => clicked = false);
 
-    return (mesh) => vehicle = mesh;
+    return (mesh, camera) => {
+        vehicle = mesh;
+        camera.parent = vehicle;
+    };
 };
 
 const createModel = (task, getIslandInstance, index, step) => {
@@ -128,6 +129,7 @@ const createModel = (task, getIslandInstance, index, step) => {
         position: {x: -index * step, y: 0, z: 0},
     });
     carBody.isVisible = false;
+    carBody.setPhysics({mass: 1})
 
     const {x, y, z} = vehicles[task.name].islandPosition;
 
@@ -176,33 +178,35 @@ const shiftAllVehicles = (scene, vehicles, isLeft, step) => {
     Array.from(vehicles, vehicle => run(scene, vehicle, isLeft, step));
 };
 
-const createGarageCars = (tasks, scene, canvas) => {
+const createGarageCars = (tasks, scene, canvas, camera) => {
     const step = 60;
     const getIslandInstance = createIsland(tasks[4].loadedMeshes[0]);
-    const vehicles = Array.from(tasks.slice(0, -1), (task, index) => createModel(task, getIslandInstance, index, step));
+    const vehicles = Array.from(tasks.slice(0, -2), (task, index) => createModel(task, getIslandInstance, index, step));
     let currentVehicleNumber = 0;
+
+    camera.parent = vehicles[currentVehicleNumber];
 
     const changeVehicle = rotateVehicleByPointer(scene, canvas, vehicles[currentVehicleNumber]);
     const interfaceWindow = createInterface(vehicles);
 
-    interfaceWindow.getLeftBtn().onPointerUpObservable.add(function () {
+    interfaceWindow.getLeftBtn().onPointerUpObservable.add(() => {
         if (currentVehicleNumber > 0) {
             interfaceWindow.enableBtn(interfaceWindow.getRightBtn(), true);
-            changeVehicle(vehicles[--currentVehicleNumber]);
+            changeVehicle(vehicles[--currentVehicleNumber], camera);
             shiftAllVehicles(scene, vehicles, true, step);
         }
 
-        !currentVehicleNumber && interfaceWindow.enableBtn(this, false);
+        !currentVehicleNumber && interfaceWindow.enableBtn(interfaceWindow.getLeftBtn(), false);
     });
 
-    interfaceWindow.getRightBtn().onPointerUpObservable.add(function () {
+    interfaceWindow.getRightBtn().onPointerUpObservable.add(() => {
         if (currentVehicleNumber < vehicles.length - 1) {
             interfaceWindow.enableBtn(interfaceWindow.getLeftBtn(), true);
-            changeVehicle(vehicles[++currentVehicleNumber]);
+            changeVehicle(vehicles[++currentVehicleNumber], camera);
             shiftAllVehicles(scene, vehicles, false, step);
         }
 
-        currentVehicleNumber === vehicles.length - 1 && interfaceWindow.enableBtn(this, false);
+        currentVehicleNumber === vehicles.length - 1 && interfaceWindow.enableBtn(interfaceWindow.getRightBtn(), false);
     });
 };
 
