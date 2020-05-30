@@ -126,10 +126,9 @@ const rotateVehicleByPointer = (scene, canvas, mesh) => {
 const createModel = (task, getIslandInstance, index, step) => {
     const carBody = mesh.createBox({
         size: {x: 1, y: 1, z: 1},
-        position: {x: -index * step, y: 0, z: 0},
+        position: {x: -index * step, y: 300, z: 0},
     });
     carBody.isVisible = false;
-    carBody.setPhysics({mass: 1})
 
     const {x, y, z} = vehicles[task.name].islandPosition;
 
@@ -184,7 +183,7 @@ const createGarageCars = (tasks, scene, canvas, camera) => {
     const vehicles = Array.from(tasks.slice(0, -2), (task, index) => createModel(task, getIslandInstance, index, step));
     let currentVehicleNumber = 0;
 
-    camera.parent = vehicles[currentVehicleNumber];
+    // camera.parent = vehicles[currentVehicleNumber];
 
     const changeVehicle = rotateVehicleByPointer(scene, canvas, vehicles[currentVehicleNumber]);
     const interfaceWindow = createInterface(vehicles);

@@ -1,6 +1,7 @@
 import {materials, mesh} from "../playground/materials";
 import {billboardsArray, iconsFrame} from "../playground/playground";
 import {createJoystick} from "../joystick";
+import {vehicles} from "./carsData";
 
 const car = {
     vehicle: null,
@@ -14,22 +15,6 @@ const car = {
     vehicleSteering: 0,
     breakingForce: 0,
     chassisMesh: null,
-};
-
-const vehicles = {
-    golf: {
-        position: {
-            x: 0,
-            y: -0.5,
-            z: -0.1
-        },
-        size: {
-            width: 1.85,
-            height: 1,
-            depth: 4.4
-        },
-        wheelRotation: Math.PI / 2,
-    }
 };
 
 const massVehicle = 400;
@@ -212,22 +197,26 @@ const update = (scene, joystick) => {
 };
 
 
-const createCarBody = (scene) => {
+const createCarBody = (scene, carBody) => {
     car.chassisMesh = mesh.createBox({
-        size: {x: vehicles.golf.size.width, y: vehicles.golf.size.height, z: vehicles.golf.size.depth},
+        size: {
+            x: vehicles[carBody.name].details.size.width,
+            y: vehicles[carBody.name].details.size.height,
+            z: vehicles[carBody.name].details.size.depth
+        },
         position: {x: 0, y: 0, z: 0},
         material: materials['green']
     });
     car.chassisMesh.rotationQuaternion = new BABYLON.Quaternion();
     car.chassisMesh.isVisible = false;
 
-    scene.getMeshByName('__root__').rotationQuaternion = null;
-    scene.getMeshByName('__root__').rotation.set(0, Math.PI / -2, 0);
-    scene.getMeshByName('__root__').position = vehicles.golf.position;
-    scene.getMeshByName('__root__').parent = car.chassisMesh;
+    carBody.loadedMeshes[0].rotationQuaternion = null;
+    carBody.loadedMeshes[0].rotation.set(0, Math.PI / -2, 0);
+    carBody.loadedMeshes[0].position = vehicles[carBody.name].details.position;
+    carBody.loadedMeshes[0].parent = car.chassisMesh;
 };
 
-function createVehicle(scene, camera, {carTask, wheelTask}) {
+function createVehicle(scene, camera, carBody) {
     const quat = new BABYLON.Quaternion();
     const wheelDirectionCS0 = new Ammo.btVector3(0, -1, 0);
     const wheelAxleCS = new Ammo.btVector3(-1, 0, 0);
@@ -235,7 +224,14 @@ function createVehicle(scene, camera, {carTask, wheelTask}) {
     const physicsWorld = scene.getPhysicsEngine().getPhysicsPlugin().world;
     const localInertia = new Ammo.btVector3(0, 0, 0);
 
-    const geometry = new Ammo.btBoxShape(new Ammo.btVector3(vehicles.golf.size.width * .5, vehicles.golf.size.height * .5, vehicles.golf.size.depth * .5));
+    const geometry = new Ammo.btBoxShape(
+        new Ammo.btVector3(
+            vehicles[carBody.name].details.size.width * .5,
+            vehicles[carBody.name].details.size.height * .5,
+            vehicles[carBody.name].details.size.depth * .5
+        )
+    );
+
     geometry.calculateLocalInertia(massVehicle, localInertia);
 
     const transform = new Ammo.btTransform();
@@ -285,31 +281,46 @@ function createVehicle(scene, camera, {carTask, wheelTask}) {
         car.wheelMeshes[index] = wheel;
     };
 
+    const carBodyRoot = carBody.loadedMeshes[0];
+    createCarBody(scene, carBody);
 
-    createCarBody(scene);
-
-    Array.from(scene.getMeshByName('__root__').getChildren(), item => {
+    Array.from(carBodyRoot.getChildren(), item => {
+        console.log(item.name)
         const {x, y, z} = item.position;
 
         switch (item.name) {
             case 'Front_wheel_left':
                 item.parent = null;
-                Array.from(item.getChildren(), item => item.rotation.x = Math.PI / 2);
+                Array.from(item.getChildren(), item => {
+                    item.rotation = vehicles[carBody.name].details.wheelRotation
+                });
                 addWheel(true, new Ammo.btVector3(z, y, x), y, item, wheelsNumber.front_left);
                 break;
             case 'Front_wheel_right':
                 item.parent = null;
-                Array.from(item.getChildren(), item => item.rotation.x = Math.PI / 2);
+                Array.from(item.getChildren(), item => {
+                    item.rotation = {
+                        ...vehicles[carBody.name].details.wheelRotation,
+                        x: Math.PI
+                    }
+                });
                 addWheel(true, new Ammo.btVector3(z, y, x), y, item, wheelsNumber.front_right);
                 break;
             case 'Rear_wheel_left':
                 item.parent = null;
-                Array.from(item.getChildren(), item => item.rotation.x = Math.PI / 2);
+                Array.from(item.getChildren(), item => {
+                    item.rotation = {
+                        ...vehicles[carBody.name].details.wheelRotation,
+                        x: Math.PI
+                    }
+                });
                 addWheel(false, new Ammo.btVector3(z, y, x), y, item, wheelsNumber.rear_left);
                 break;
             case 'Rear_wheel_right':
                 item.parent = null;
-                Array.from(item.getChildren(), item => item.rotation.x = Math.PI / 2);
+                Array.from(item.getChildren(), item => {
+                    item.rotation = vehicles[carBody.name].details.wheelRotation
+                });
                 addWheel(false, new Ammo.btVector3(z, y, x), y, item, wheelsNumber.rear_right);
                 break;
             default:

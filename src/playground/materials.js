@@ -2,7 +2,8 @@ const colors = {
     'peach': '#ffe5b4',
     'green': '#1C5030',
     'white': '#ffffff',
-    'lightColor': '#feff7f'
+    'lightColor': '#feff7f',
+    'lightGreen': '#A5C148'
 };
 
 const materials = {

@@ -10,7 +10,7 @@ const load = scene => {
     assetsManager.addMeshTask('car', '', 'assets/', 'car.gltf');
     assetsManager.addMeshTask('VW', '', 'assets/', 'VW.gltf');
     assetsManager.addMeshTask('bus', '', 'assets/', "bus.gltf");
-    assetsManager.addMeshTask('island', '', 'assets/', "island.gltf");
+    assetsManager.addMeshTask('island', '', 'assets/', "cloud.gltf");
     assetsManager.addMeshTask('hole', '', 'assets/', "hole.gltf");
 
     assetsManager.load();
@@ -31,9 +31,9 @@ const main = async ({scene, camera, canvas}) => {
 
     materials.setColors();
 
-    // createPlayground(scene); // Создаём площадку со всеми объектами
+    createPlayground(scene, tasks); // Создаём площадку со всеми объектами
     createGarageCars(tasks, scene, canvas, camera);
-    // createVehicle(scene, camera, {golf: tasks[0], car: tasks[1], VW: tasks[2]}); // Создаём машинку
+    createVehicle(scene, camera, tasks[2]); // Создаём машинку
 };
 
 
